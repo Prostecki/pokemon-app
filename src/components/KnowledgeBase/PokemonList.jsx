@@ -1,10 +1,14 @@
-export default function PokemonList({ characters, onSelect, onBackToMenu }) {
+import { useNavigate } from "react-router-dom";
+
+export default function PokemonList({ characters }) {
+  const navigate = useNavigate();
+
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
       <div className="flex justify-center gap-5 items-center mb-6">
         <h1 className="text-3xl font-bold text-center">Choose your Pokemon!</h1>
         <button
-          onClick={onBackToMenu}
+          onClick={() => navigate("/")}
           className="border-1 border-gray-500/50 rounded-xl bg-blue-500 text-white cursor-pointer hover:scale-105 duration-200 px-4 py-2"
         >
           Back to Menu
@@ -15,7 +19,7 @@ export default function PokemonList({ characters, onSelect, onBackToMenu }) {
           <div
             key={character.id}
             className="p-4 bg-white rounded-lg shadow cursor-pointer transition transform hover:scale-105"
-            onClick={() => onSelect(character.id)}
+            onClick={() => navigate(`/base/${character.id}`)}
           >
             <img
               src={character.image}

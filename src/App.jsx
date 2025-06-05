@@ -1,6 +1,10 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Loading from "./components/Loading";
 import StartMenu from "./components/StartMenu/StartMenu";
+import StartGame from "./components/StartGame/StartGame";
+import About from "./components/About/About";
 import KnowledgeBase from "./components/KnowledgeBase/KnowledgeBase";
+import PokemonDetails from "./components/KnowledgeBase/PokemonDetails";
 import { useState, useEffect } from "react";
 import "./index.css";
 
@@ -36,4 +40,16 @@ function App() {
   }
 }
 
-export default App;
+export default function RouterApp() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/base" element={<KnowledgeBase />} />
+        <Route path="/startgame" element={<StartGame />} />
+        <Route path="/base/:id" element={<PokemonDetails />} />
+      </Routes>
+    </Router>
+  );
+}
