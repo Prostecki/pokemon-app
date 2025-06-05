@@ -15,11 +15,19 @@ export const getPokemonChartOptions = (stats) => {
             size: 12,
           },
         },
+        pointLabels: {
+          display: true,
+          font: {
+            size: 15,
+            weight: "bold",
+          },
+          padding: 10,
+        },
       },
     },
     plugins: {
       legend: {
-        position: "bottom",
+        position: "top",
         labels: {
           font: {
             size: 14,

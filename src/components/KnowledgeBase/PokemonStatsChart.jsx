@@ -17,5 +17,9 @@ export function PokemonStatsChart({ stats }) {
   const data = formatPokemonChartData(stats);
   const options = getPokemonChartOptions(stats);
 
-  return <PolarArea data={data} options={options} />;
+  return (
+    <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl aspect-square mx-auto">
+      <PolarArea data={data} options={options} />
+    </div>
+  );
 }
