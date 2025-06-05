@@ -32,7 +32,7 @@ export default function KnowledgeBase({ onBackToMenu }) {
           return {
             id: details.id,
             name: details.name,
-            image: details.sprites.front_default,
+            image: details.sprites.other["official-artwork"].front_default,
             url: pokemon.url,
           };
         })

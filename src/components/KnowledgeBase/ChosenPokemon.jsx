@@ -8,7 +8,7 @@ export default function ChosenPokemon({ pokemon }) {
           alt={pokemon.name}
           className="w-48 h-48 object-contain"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white opacity-20 rounded-full"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-500 to-white/50 opacity-20 rounded-full"></div>
       </div>
       <div className="text-center">
         <p className="text-gray-600">Pokémon #{pokemon.id}</p>
