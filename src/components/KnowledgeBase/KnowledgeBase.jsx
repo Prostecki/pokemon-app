@@ -114,15 +114,17 @@ export default function KnowledgeBase({ onBackToMenu }) {
 
   // Show details view when a pokemon is selected
   if (showDetails && pokemonDetails) {
-    return <PokemonDetails pokemon={pokemonDetails} onBack={handleBackToList} />;
+    return (
+      <PokemonDetails pokemon={pokemonDetails} onBack={handleBackToList} />
+    );
   }
 
   // Show list of all pokemons - now with the onBackToMenu prop
   return (
-    <PokemonList 
-      characters={characters} 
-      onSelect={handleSelectPokemon} 
-      onBackToMenu={onBackToMenu} 
+    <PokemonList
+      characters={characters}
+      onSelect={handleSelectPokemon}
+      onBackToMenu={onBackToMenu}
     />
   );
 }

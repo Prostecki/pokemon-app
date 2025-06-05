@@ -16,3 +16,4 @@ export default function ChosenPokemon({ pokemon }) {
     </div>
   );
 }
+2;

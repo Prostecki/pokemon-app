@@ -10,7 +10,7 @@ function App() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setGameStage("startMenu");
-    }, 3000); // 3 seconds delay for loading screen
+    }, 1000); // 3 seconds delay for loading screen
 
     return () => clearTimeout(timer);
   }, []);
