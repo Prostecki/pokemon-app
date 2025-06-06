@@ -28,8 +28,8 @@ export default function PokemonDetailInfo({ pokemon }) {
         </div>
       </div>
 
-      <div className="mb-3">
-        <h3 className="font-semibold">Abilities:</h3>
+      <div className="mb-3 border border-gray-200 w-max p-4 rounded-xl drop-shadow-md">
+        <h3 className="font-semibold text-center">Abilities:</h3>
         <ul className="list-disc pl-5 mt-1">
           {pokemon.abilities.map((ability) => (
             <li key={ability}>{ability}</li>

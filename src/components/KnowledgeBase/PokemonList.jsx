@@ -3,7 +3,7 @@ import MenuButton from "../StartMenu/MenuButton";
 import PaginationBlock from "./PaginationBlock";
 import { usePaginationContext } from "../../contexts/PaginationContext";
 
-export default function PokemonList({ onBackToMenu }) {
+export default function PokemonList() {
   const navigate = useNavigate();
   const { characters, currentPage } = usePaginationContext();
 

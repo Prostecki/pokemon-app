@@ -122,8 +122,10 @@ export default function PokemonDetails() {
           <ChosenPokemon pokemon={pokemon} />
         </div>
 
-        {/* Stats Chart - Top Right */}
-        <div className="md:w-sm">
+        {/* Detail Info - Bottom Left */}
+        <div className="border border-black/10 rounded-xl p-4 h-full">
+          <PokemonDetailInfo pokemon={pokemon} />
+          {/* Stats Chart - Top Right */}
           <PokemonStatsChart stats={pokemon.stats} />
         </div>
 
@@ -136,11 +138,6 @@ export default function PokemonDetails() {
               <p className="text-gray-500">No evolutions available</p>
             </div>
           )}
-        </div>
-
-        {/* Detail Info - Bottom Left */}
-        <div className="border border-black/10 rounded-xl p-4 h-full">
-          <PokemonDetailInfo pokemon={pokemon} />
         </div>
       </div>
     </div>
