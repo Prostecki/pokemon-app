@@ -1,40 +1,100 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { PokemonStatsChart } from "./PokemonStatsChart";
 import ChosenPokemon from "./ChosenPokemon";
+import PokemonDetailInfo from "./PokemonDetailInfo";
+import Evolutions from "./Evolutions";
 
 export default function PokemonDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const fromPage = location.state?.fromPage || 1;
   const [pokemon, setPokemon] = useState(null);
+  const [evolutions, setEvolutions] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchPokemon() {
       setLoading(true);
-      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-      const data = await response.json();
-      const speciesResponse = await fetch(data.species.url);
-      const speciesData = await speciesResponse.json();
-      setPokemon({
-        id: data.id,
-        name: data.name,
-        image: data.sprites.other["official-artwork"].front_default,
-        height: data.height / 10,
-        weight: data.weight / 10,
-        types: data.types.map((t) => t.type.name),
-        abilities: data.abilities.map((a) => a.ability.name),
-        stats: data.stats.map((s) => ({
-          name: s.stat.name,
-          value: s.base_stat,
-        })),
-        description:
-          speciesData.flavor_text_entries.find(
-            (entry) => entry.language.name === "en"
-          )?.flavor_text || "No description available",
-      });
-      setLoading(false);
+      try {
+        // Fetch basic Pokemon data
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+        const data = await response.json();
+
+        // Fetch species data
+        const speciesResponse = await fetch(data.species.url);
+        const speciesData = await speciesResponse.json();
+
+        // Fetch evolution chain data
+        const evolutionResponse = await fetch(speciesData.evolution_chain.url);
+        const evolutionData = await evolutionResponse.json();
+
+        // Process evolution data
+        const evolutionChain = [];
+        let evoData = evolutionData.chain;
+
+        // Process the first Pokemon in the chain
+        const firstPokemon = {
+          name: evoData.species.name,
+          url: evoData.species.url,
+        };
+        evolutionChain.push(firstPokemon);
+
+        // Process evolutions in the chain
+        while (evoData.evolves_to?.length > 0) {
+          evoData = evoData.evolves_to[0];
+          evolutionChain.push({
+            name: evoData.species.name,
+            url: evoData.species.url,
+          });
+        }
+
+        // Fetch additional details for each evolution
+        const detailedEvolutions = await Promise.all(
+          evolutionChain.map(async (evo) => {
+            // Extract ID from URL
+            const evoId = evo.url.split("/").filter(Boolean).pop();
+            const evoResponse = await fetch(
+              `https://pokeapi.co/api/v2/pokemon/${evoId}`
+            );
+            const evoData = await evoResponse.json();
+
+            return {
+              id: evoData.id,
+              name: evoData.name,
+              image: evoData.sprites.other["official-artwork"].front_default,
+            };
+          })
+        );
+
+        setEvolutions(detailedEvolutions);
+
+        // Set Pokemon data
+        setPokemon({
+          id: data.id,
+          name: data.name,
+          image: data.sprites.other["official-artwork"].front_default,
+          height: data.height / 10,
+          weight: data.weight / 10,
+          types: data.types.map((t) => t.type.name),
+          abilities: data.abilities.map((a) => a.ability.name),
+          stats: data.stats.map((s) => ({
+            name: s.stat.name,
+            value: s.base_stat,
+          })),
+          description:
+            speciesData.flavor_text_entries.find(
+              (entry) => entry.language.name === "en"
+            )?.flavor_text || "No description available",
+        });
+      } catch (error) {
+        console.error("Error fetching Pokemon data:", error);
+      } finally {
+        setLoading(false);
+      }
     }
+
     fetchPokemon();
   }, [id]);
 
@@ -47,57 +107,40 @@ export default function PokemonDetails() {
   }
 
   return (
-    <div className="p-8 flex flex-col items-center">
+    <div className="p-8 flex flex-col items-start max-w-6xl mx-auto">
       <button
-        onClick={() => navigate("/base")}
+        onClick={() => navigate("/base", { state: { returnToPage: fromPage } })}
         className="mb-4 px-4 py-2 w-max bg-gray-500 text-white rounded hover:bg-gray-600"
       >
         Back to all Pokémon
       </button>
-      <div className="flex flex-col gap-8 w-full items-center">
-        <div className="bg-black/10 p-6 rounded-lg h-max shadow">
+
+      {/* 2x2 Grid Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+        {/* Chosen Pokemon - Top Left */}
+        <div className="border border-black/10 rounded-xl p-4 h-full flex items-center justify-center">
           <ChosenPokemon pokemon={pokemon} />
         </div>
-        {/* Адаптивная верстка для stats и details */}
-        <div className="flex flex-col justify-center lg:flex-row gap-5 w-full max-w-6xl">
-          <div className="w-full lg:w-1/2 border border-black/10 rounded-2xl p-5 min-h-[350px]">
-            <PokemonStatsChart stats={pokemon.stats} />
-          </div>
-          <div className="w-full lg:w-1/2 border border-black/10 rounded-2xl flex">
-            <div className="p-5 rounded-lg mt-4 w-full">
-              <h2 className="text-xl font-bold mb-4">Details</h2>
-              <div className="mb-3">
-                <h3 className="font-semibold">Description:</h3>
-                <p className="mt-1">{pokemon.description}</p>
-              </div>
-              <div className="mb-3">
-                <h3 className="font-semibold">Physical:</h3>
-                <p className="mt-1">Height: {pokemon.height}m</p>
-                <p>Weight: {pokemon.weight}kg</p>
-              </div>
-              <div className="mb-3">
-                <h3 className="font-semibold">Types:</h3>
-                <div className="flex gap-2 mt-1">
-                  {pokemon.types.map((type) => (
-                    <span
-                      key={type}
-                      className="px-2 py-1 bg-blue-100 text-blue-800 rounded"
-                    >
-                      {type}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div className="mb-3">
-                <h3 className="font-semibold">Abilities:</h3>
-                <ul className="list-disc pl-5 mt-1">
-                  {pokemon.abilities.map((ability) => (
-                    <li key={ability}>{ability}</li>
-                  ))}
-                </ul>
-              </div>
+
+        {/* Stats Chart - Top Right */}
+        <div className="border border-black/10 rounded-xl p-4 h-full">
+          <PokemonStatsChart stats={pokemon.stats} />
+        </div>
+
+        {/* Evolutions - Bottom Right */}
+        <div className="p-4 h-full">
+          {evolutions.length > 1 ? (
+            <Evolutions evolutions={evolutions} />
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <p className="text-gray-500">No evolutions available</p>
             </div>
-          </div>
+          )}
+        </div>
+
+        {/* Detail Info - Bottom Left */}
+        <div className="border border-black/10 rounded-xl p-4 h-full">
+          <PokemonDetailInfo pokemon={pokemon} />
         </div>
       </div>
     </div>
