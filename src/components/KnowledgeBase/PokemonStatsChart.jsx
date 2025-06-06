@@ -1,25 +1,35 @@
-import { PolarArea } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
-  RadialLinearScale,
-  ArcElement,
+  CategoryScale,
+  LinearScale,
+  BarElement,
   Tooltip,
   Legend,
   Title,
+  BarController,
 } from "chart.js";
-import { getPokemonChartOptions } from "./chartConfig";
-import { formatPokemonChartData } from "./chartData";
+import { getPokemonBarChartOptions } from "./chartConfig";
+import { formatPokemonBarChartData } from "./chartData";
 
 // Register required Chart.js components
-ChartJS.register(RadialLinearScale, ArcElement, Tooltip, Legend, Title);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Tooltip,
+  Legend,
+  Title,
+  BarController
+);
 
 export function PokemonStatsChart({ stats }) {
-  const data = formatPokemonChartData(stats);
-  const options = getPokemonChartOptions(stats);
+  const data = formatPokemonBarChartData(stats);
+  const options = getPokemonBarChartOptions(stats);
 
   return (
-    <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl aspect-square mx-auto">
-      <PolarArea data={data} options={options} />
+    <div className="relative max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto">
+      <Bar data={data} options={options} />
     </div>
   );
 }

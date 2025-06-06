@@ -5,6 +5,7 @@ import PokemonDetails from "./PokemonDetails";
 import { usePagination } from "../../hooks/usePagination";
 import { usePokemonList } from "../../hooks/usePokemonList";
 import { usePokemonDetails } from "../../hooks/usePokemonDetails";
+import { PaginationProvider } from "../../contexts/PaginationContext";
 
 export default function KnowledgeBase({ onBackToMenu }) {
   const location = useLocation();
@@ -95,15 +96,16 @@ export default function KnowledgeBase({ onBackToMenu }) {
   }
 
   return (
-    <PokemonList
+    <PaginationProvider
       characters={characters}
-      onSelect={handleSelectPokemon}
-      onBackToMenu={onBackToMenu}
+      currentPage={currentPage}
+      totalPages={totalPages}
       onPrevPage={handlePrevPage}
       onNextPage={handleNextPage}
       onGoToPage={handleGoToPage}
-      currentPage={currentPage}
-      totalPages={totalPages}
-    />
+      onSelect={handleSelectPokemon}
+    >
+      <PokemonList onBackToMenu={onBackToMenu} />
+    </PaginationProvider>
   );
 }

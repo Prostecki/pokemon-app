@@ -1,47 +1,36 @@
-export const getPokemonChartOptions = (stats) => {
-  return {
-    responsive: true,
-    scales: {
-      r: {
-        angleLines: {
-          display: false,
-        },
-        suggestedMin: 0,
-        suggestedMax: Math.max(...stats.map((stat) => stat.value)) + 10,
-        ticks: {
-          beginAtZero: true,
-          stepSize: 10,
-          font: {
-            size: 12,
-          },
-        },
-        pointLabels: {
-          display: true,
-          font: {
-            size: 15,
-            weight: "bold",
-          },
-          padding: 10,
-        },
-      },
-    },
-    plugins: {
-      legend: {
-        position: "top",
-        labels: {
-          font: {
-            size: 14,
-          },
-        },
-      },
-      title: {
-        display: true,
-        text: "Pokemon Stats",
+import { Chart } from "chart.js";
+
+export const getPokemonBarChartOptions = () => ({
+  responsive: true,
+  indexAxis: "y",
+  plugins: {
+    legend: {
+      position: "top",
+      labels: {
         font: {
-          size: 24,
-          weight: "bold",
+          size: 14,
+        },
+        color: "#222",
+        generateLabels: (chart) => {
+          // Use a custom color for the legend box
+          const defaultLabels =
+            Chart.helpers?.legend?.generateLabels(chart) || [];
+          return defaultLabels.map((label) => ({
+            ...label,
+            fillStyle: "#888", // gray color for legend box
+            strokeStyle: "#888",
+          }));
         },
       },
     },
-  };
-};
+    title: {
+      display: true,
+      text: "Pokemon Stats",
+      font: {
+        size: 24,
+        weight: "bold",
+      },
+      color: "#222",
+    },
+  },
+});

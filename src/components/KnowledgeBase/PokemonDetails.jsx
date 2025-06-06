@@ -123,7 +123,7 @@ export default function PokemonDetails() {
         </div>
 
         {/* Stats Chart - Top Right */}
-        <div className="border border-black/10 rounded-xl p-4 h-full">
+        <div className="md:w-sm">
           <PokemonStatsChart stats={pokemon.stats} />
         </div>
 
