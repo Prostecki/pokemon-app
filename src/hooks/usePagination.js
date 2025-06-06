@@ -3,7 +3,7 @@ import { useState, useCallback } from "react";
 export function usePagination(
   initialPage = 1,
   totalItems = 0,
-  itemsPerPage = 20
+  itemsPerPage = 40
 ) {
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [totalPages, setTotalPages] = useState(

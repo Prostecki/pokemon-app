@@ -9,8 +9,8 @@ import {
   Title,
   BarController,
 } from "chart.js";
-import { getPokemonBarChartOptions } from "./chartConfig";
-import { formatPokemonBarChartData } from "./chartData";
+import { getPokemonBarChartOptions } from "../../../utils/charts/chartConfig";
+import { formatPokemonBarChartData } from "../../../utils/charts/chartData";
 
 // Register required Chart.js components
 ChartJS.register(
@@ -23,7 +23,7 @@ ChartJS.register(
   BarController
 );
 
-export function PokemonStatsChart({ stats }) {
+export default function PokemonStatsChart({ stats }) {
   const data = formatPokemonBarChartData(stats);
   const options = getPokemonBarChartOptions(stats);
 

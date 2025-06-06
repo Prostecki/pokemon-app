@@ -1,4 +1,4 @@
-import { usePaginationContext } from "../../contexts/PaginationContext";
+import { usePaginationContext } from "../../../contexts/PaginationContext";
 
 export default function PaginationBlock() {
   const { currentPage, totalPages, onPrevPage, onNextPage, onGoToPage } =

@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { fetchPokemonByUrl, fetchPokemonSpecies } from "../api/pokemonApi";
+import { fetchPokemonByUrl, fetchPokemonSpecies } from "../utils/pokemonApi";
 
 export function usePokemonDetails() {
   const [pokemonDetails, setPokemonDetails] = useState(null);

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { fetchPokemonList, fetchPokemonByUrl } from "../api/pokemonApi";
+import { fetchPokemonList, fetchPokemonByUrl } from "../utils/pokemonApi";
 
 export function usePokemonList(initialPage, itemsPerPage) {
   const [characters, setCharacters] = useState([]);
