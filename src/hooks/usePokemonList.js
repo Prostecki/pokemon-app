@@ -22,6 +22,9 @@ export function usePokemonList(initialPage, itemsPerPage) {
               id: details.id,
               name: details.name,
               image: details.sprites.other["official-artwork"].front_default,
+              animatedImage:
+                details.sprites.versions?.["generation-v"]?.["black-white"]
+                  ?.animated?.front_default || null,
               url: pokemon.url,
             };
           })

@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import "./StartMenu.css";
 import MenuButton from "./MenuButton";
 
@@ -41,42 +42,50 @@ export default function StartMenu() {
 
         {/* Кнопки в стиле покеболов */}
         <div className="flex flex-col gap-4 items-center">
-          <MenuButton
-            onClick={() => navigate("/base")}
-            className="hover:bg-red-100 border-red-500 w-62"
-          >
-            <span className="flex items-center">
-              <img src="images/pokemon-go.png" className="w-10 mr-2" />
-              Pokédex Database
-            </span>
-          </MenuButton>
+          <motion.div whileHover={{ scale: 1.08, rotate: -5 }}>
+            <MenuButton
+              onClick={() => navigate("/base")}
+              className="hover:bg-red-100 border-red-500 w-62"
+            >
+              <span className="flex items-center">
+                <img src="images/pokemon-go.png" className="w-10 mr-2" />
+                Pokédex Database
+              </span>
+            </MenuButton>
+          </motion.div>
 
-          <MenuButton
-            onClick={() => navigate("/about")}
-            className="hover:bg-blue-100 border-blue-500"
-          >
-            <span className="flex items-center">
-              <img src="images/pokemon-trainer.png" className="w-10 mr-2" />
-              Trainer Profiles
-            </span>
-          </MenuButton>
+          <motion.div whileHover={{ scale: 1.08, rotate: 5 }}>
+            <MenuButton
+              onClick={() => navigate("/about")}
+              className="hover:bg-blue-100 border-blue-500"
+            >
+              <span className="flex items-center">
+                <img src="images/pokemon-trainer.png" className="w-10 mr-2" />
+                Trainer Profiles
+              </span>
+            </MenuButton>
+          </motion.div>
 
-          <MenuButton
-            onClick={() => navigate("/startgame")}
-            className="hover:bg-yellow-100 border-yellow-500 animate-pulse"
-          >
-            <span className="flex items-center">
-              <img src="images/go.png" className="w-10 mr-2" />
-              Start Journey!
-            </span>
-          </MenuButton>
+          <motion.div whileHover={{ scale: 1.08, rotate: -5 }}>
+            <MenuButton
+              onClick={() => navigate("/startgame")}
+              className="hover:bg-yellow-100 border-yellow-500 animate-pulse"
+            >
+              <span className="flex items-center">
+                <img src="images/go.png" className="w-10 mr-2" />
+                Start Journey!
+              </span>
+            </MenuButton>
+          </motion.div>
 
-          <MenuButton className="hover:bg-purple-100 border-purple-500">
-            <span className="flex items-center">
-              <img src="images/start.png" className="w-10 mr-2" />
-              Poké Melody
-            </span>
-          </MenuButton>
+          <motion.div whileHover={{ scale: 1.08, rotate: 5 }}>
+            <MenuButton className="hover:bg-purple-100 border-purple-500">
+              <span className="flex items-center">
+                <img src="images/start.png" className="w-10 mr-2" />
+                Poké Melody
+              </span>
+            </MenuButton>
+          </motion.div>
         </div>
       </div>
     </div>

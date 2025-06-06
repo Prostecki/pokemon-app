@@ -10,7 +10,7 @@ import { PaginationProvider } from "../../contexts/PaginationContext";
 export default function KnowledgeBase({ onBackToMenu }) {
   const location = useLocation();
   const returnToPage = location.state?.returnToPage || 1;
-  const ITEMS_PER_PAGE = 20;
+  const ITEMS_PER_PAGE = 40; // Было 20, стало 40
 
   // using custom hooks for pagination and data fetching
   const {
@@ -28,7 +28,7 @@ export default function KnowledgeBase({ onBackToMenu }) {
     error: listError,
     totalItems,
     fetchPokemons,
-  } = usePokemonList(ITEMS_PER_PAGE);
+  } = usePokemonList(currentPage, ITEMS_PER_PAGE);
 
   const {
     pokemonDetails,

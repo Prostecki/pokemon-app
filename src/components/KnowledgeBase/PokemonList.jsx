@@ -13,25 +13,29 @@ export default function PokemonList() {
         <h1 className="text-3xl font-bold text-center">Choose your Pokemon!</h1>
         <MenuButton onClick={() => navigate("/")}>Back to menu</MenuButton>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-10 gap-2 md:gap-3 lg:gap-4">
         {characters.map((character) => (
           <div
             key={character.id}
-            className="p-4 bg-white rounded-lg shadow cursor-pointer transition transform hover:scale-105"
+            className="p-2 md:p-3 lg:p-4 bg-stone-400/40 rounded-lg shadow cursor-pointer transition transform hover:scale-105"
             onClick={() =>
               navigate(`/base/${character.id}`, {
                 state: { fromPage: currentPage },
               })
             }
           >
-            <img
-              src={character.image}
-              alt={character.name}
-              className="w-full h-32 object-contain"
-            />
-            <h3 className="mt-2 text-center capitalize font-medium">
+            <h3 className="mt-1 md:mt-2 text-center capitalize font-medium text-xs sm:text-sm md:text-base bg-gradient-to-r from-stone-400/40 via-stone-200 to-stone-400/40 rounded px-2 py-1">
               {character.name}
             </h3>
+            <img
+              src={
+                character.animatedImage
+                  ? character.animatedImage
+                  : character.image
+              }
+              alt={character.name}
+              className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 object-contain mx-auto"
+            />
           </div>
         ))}
       </div>
