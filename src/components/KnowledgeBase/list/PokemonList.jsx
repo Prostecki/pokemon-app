@@ -31,7 +31,7 @@ export default function PokemonList({ onBackToMenu, searchQuery, onSearch }) {
           {characters.map((character) => (
             <div
               key={character.id}
-              className="p-2 md:p-3 lg:p-4 bg-stone-400/40 rounded-lg shadow cursor-pointer transition transform hover:scale-105"
+              className="p-2 md:p-3 lg:p-4 bg-stone-400/40 shadow cursor-pointer transition transform hover:scale-105"
               onClick={() =>
                 navigate(`/base/${character.id}`, {
                   state: { fromPage: currentPage },
