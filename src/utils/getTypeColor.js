@@ -1,4 +1,4 @@
-export default function getTypeColor(type) {
+export function getTypeColor(type) {
   const typeColors = {
     normal: "#A8A77A",
     fire: "#EE8130",
@@ -20,4 +20,8 @@ export default function getTypeColor(type) {
     fairy: "#D685AD",
   };
   return typeColors[type] || "#777";
+}
+
+export function getMoveName(move) {
+  return typeof move === "object" && move.name ? move.name : move;
 }

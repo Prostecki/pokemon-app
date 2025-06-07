@@ -25,7 +25,7 @@ export const getPokemonBarChartOptions = () => ({
     },
     title: {
       display: true,
-      text: "Pokemon Stats",
+      text: "Pokémon Stats",
       font: {
         size: 24,
         weight: "bold",

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import getTypeColor from "../../../utils/getTypeColor";
+import { getTypeColor } from "../../../utils/getTypeColor";
 
 export default function ChosenPokemon({ pokemon }) {
   const [currentImage, setCurrentImage] = useState(pokemon.image);
@@ -66,9 +66,6 @@ export default function ChosenPokemon({ pokemon }) {
             </button>
           )}
         </div>
-      </div>
-      <div className="mt-4 text-center text-gray-700">
-        <p className="italic">{pokemon.description}</p>
       </div>
     </div>
   );

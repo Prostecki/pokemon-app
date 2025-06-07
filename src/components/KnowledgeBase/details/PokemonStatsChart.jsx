@@ -25,10 +25,13 @@ ChartJS.register(
 
 export default function PokemonStatsChart({ stats }) {
   const data = formatPokemonBarChartData(stats);
-  const options = getPokemonBarChartOptions(stats);
+  const options = {
+    ...getPokemonBarChartOptions(stats),
+    maintainAspectRatio: false,
+  };
 
   return (
-    <div className="relative max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto">
+    <div className="relative h-64 w-full">
       <Bar data={data} options={options} />
     </div>
   );
