@@ -27,7 +27,7 @@ export default function PokemonList({ onBackToMenu, searchQuery, onSearch }) {
           <p className="mt-2 text-gray-500">Try a different search term</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-10 gap-2 md:gap-3 lg:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-10">
           {characters.map((character) => (
             <div
               key={character.id}
