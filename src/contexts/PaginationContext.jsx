@@ -1,41 +1,32 @@
 import { createContext, useContext } from "react";
 
-const PaginationContext = createContext(null);
+const PaginationContext = createContext();
 
-export const usePaginationContext = () => {
-  const context = useContext(PaginationContext);
-  if (!context) {
-    throw new Error(
-      "usePaginationContext must be used within a PaginationProvider"
-    );
-  }
-  return context;
-};
-
-export const PaginationProvider = ({
+export function PaginationProvider({
   children,
   characters,
   currentPage,
-  totalPages,
-  onPrevPage,
-  onNextPage,
-  onGoToPage,
+  loadMorePokemon, // New prop for loading more
   onSelect,
-}) => {
-  // Keep all pagination-related props together
-  const value = {
+}) {
+  const contextValue = {
     characters,
     currentPage,
-    totalPages,
-    onPrevPage,
-    onNextPage,
-    onGoToPage,
+    loadMorePokemon,
     onSelect,
   };
 
   return (
-    <PaginationContext.Provider value={value}>
+    <PaginationContext.Provider value={contextValue}>
       {children}
     </PaginationContext.Provider>
   );
-};
+}
+
+export function usePaginationContext() {
+  const context = useContext(PaginationContext);
+  if (!context) {
+    throw new Error("usePaginationContext must be used within a PaginationProvider");
+  }
+  return context;
+}

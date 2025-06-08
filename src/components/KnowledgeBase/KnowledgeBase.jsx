@@ -1,89 +1,93 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import PokemonList from "./list/PokemonList";
 import PokemonDetails from "./details/PokemonDetails";
-import { usePagination } from "../../hooks/usePagination";
-import { usePokemonList } from "../../hooks/usePokemonList";
 import { usePokemonDetails } from "../../hooks/usePokemonDetails";
 import { PaginationProvider } from "../../contexts/PaginationContext";
 
+// Helper function to format pokemon data
+const formatPokemonData = (pokemon) => {
+  const id = pokemon.url.split("/")[6];
+  return {
+    id,
+    name: pokemon.name,
+    image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
+    animatedImage: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/${id}.gif`,
+  };
+};
+
 export default function KnowledgeBase({ onBackToMenu }) {
-  const location = useLocation();
-  const returnToPage = location.state?.returnToPage || 1;
   const ITEMS_PER_PAGE = 40;
   const [searchQuery, setSearchQuery] = useState("");
-
-  // using custom hooks for pagination and data fetching
-  const {
-    currentPage,
-    totalPages,
-    nextPage,
-    prevPage,
-    goToPage,
-    updateTotalItems,
-  } = usePagination(returnToPage, 0, ITEMS_PER_PAGE);
-
-  const {
-    characters,
-    loading: listLoading,
-    error: listError,
-    totalItems,
-    fetchPokemons,
-  } = usePokemonList(currentPage, ITEMS_PER_PAGE);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [allPokemons, setAllPokemons] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const {
     pokemonDetails,
     loading: detailsLoading,
-    error: detailsError,
     showDetails,
     fetchDetails,
     resetDetails,
   } = usePokemonDetails();
 
-  // update total items when the totalItems changes
+  // Fetch pokemons from API and append to the list
+  const fetchPokemons = useCallback(
+    async (page) => {
+      try {
+        setLoading(true);
+        const offset = (page - 1) * ITEMS_PER_PAGE;
+        const response = await fetch(
+          `https://pokeapi.co/api/v2/pokemon?limit=${ITEMS_PER_PAGE}&offset=${offset}`
+        );
+        const data = await response.json();
+        const processedPokemons = data.results.map(formatPokemonData);
+        setAllPokemons((prev) => [...prev, ...processedPokemons]);
+        setCurrentPage(page + 1);
+        return processedPokemons;
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [ITEMS_PER_PAGE]
+  );
+
+  // Initial load
   useEffect(() => {
-    updateTotalItems(totalItems);
-  }, [totalItems, updateTotalItems]);
+    fetchPokemons(1);
+  }, [fetchPokemons]);
 
-  // loading pokemons when the component mounts or currentPage changes
-  useEffect(() => {
-    fetchPokemons(currentPage);
-  }, [currentPage, fetchPokemons]);
+  // Load more pokemons for infinite scroll
+  const loadMorePokemon = useCallback(
+    () => fetchPokemons(currentPage),
+    [fetchPokemons, currentPage]
+  );
 
-  // listener for details loading
-  const handleSelectPokemon = (id) => {
-    const selected = characters.find((char) => char.id === id);
-    if (selected) {
-      fetchDetails(selected);
-    }
-  };
+  // Handle pokemon selection
+  const handleSelectPokemon = useCallback(
+    (id) => {
+      const selected = allPokemons.find((char) => char.id === id);
+      if (selected) fetchDetails(selected);
+    },
+    [allPokemons, fetchDetails]
+  );
 
-  const handleNextPage = () => {
-    goToPage(nextPage());
-  };
+  // Memoize filtered list to avoid unnecessary renders
+  const filteredCharacters = useMemo(
+    () =>
+      searchQuery
+        ? allPokemons.filter((char) =>
+            char.name.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+        : allPokemons,
+    [allPokemons, searchQuery]
+  );
 
-  const handlePrevPage = () => {
-    goToPage(prevPage());
-  };
-
-  const handleGoToPage = (page) => {
-    goToPage(page);
-  };
-
-  // Handle search query changes
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-  };
-
-  // Filter pokemon based on search query
-  const filteredCharacters = searchQuery
-    ? characters.filter((char) =>
-        char.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : characters;
-
-  // display loading state
-  if (listLoading) {
+  // Conditional rendering for loading, error, and details states
+  if (loading && allPokemons.length === 0) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-100">
         <p className="text-2xl font-bold">Loading pokemons...</p>
@@ -91,10 +95,7 @@ export default function KnowledgeBase({ onBackToMenu }) {
     );
   }
 
-  // display error state for pokemon list
-  if (listError) {
-    return <p>Error: {listError}</p>;
-  }
+  if (error) return <p>Error: {error}</p>;
 
   if (detailsLoading) {
     return (
@@ -112,16 +113,13 @@ export default function KnowledgeBase({ onBackToMenu }) {
     <PaginationProvider
       characters={filteredCharacters}
       currentPage={currentPage}
-      totalPages={totalPages}
-      onPrevPage={handlePrevPage}
-      onNextPage={handleNextPage}
-      onGoToPage={handleGoToPage}
+      loadMorePokemon={loadMorePokemon}
       onSelect={handleSelectPokemon}
     >
       <PokemonList
         onBackToMenu={onBackToMenu}
         searchQuery={searchQuery}
-        onSearch={handleSearch}
+        onSearch={setSearchQuery}
       />
     </PaginationProvider>
   );

@@ -52,12 +52,12 @@ export default function PokemonDetails() {
       </button>
 
       {/* Main content - flex col on mobile, row on larger screens */}
-      <div className="flex flex-col md:flex-row w-full gap-4 md:gap-6">
+      <div className="flex flex-col md:flex-row w-full md:gap-6">
         {/* Left: Main info and image - full width on mobile, half on larger */}
         <div className="w-full md:w-1/2 md:pr-4">
           <ChosenPokemon pokemon={pokemon} />
           {/* Evolutions */}
-          <div className="rounded-xl p-3 sm:p-4 h-full mt-4">
+          <div className="rounded-xl p-3 sm:p-4 mt-4">
             <h2 className="text-lg sm:text-xl font-bold my-2 sm:my-4 text-center">
               Evolutions
             </h2>
