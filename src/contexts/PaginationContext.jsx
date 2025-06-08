@@ -8,12 +8,14 @@ export function PaginationProvider({
   currentPage,
   loadMorePokemon, // New prop for loading more
   onSelect,
+  hasMoreItems = true, // Flag for additional items
 }) {
   const contextValue = {
     characters,
     currentPage,
     loadMorePokemon,
     onSelect,
+    hasMoreItems,
   };
 
   return (
@@ -26,7 +28,9 @@ export function PaginationProvider({
 export function usePaginationContext() {
   const context = useContext(PaginationContext);
   if (!context) {
-    throw new Error("usePaginationContext must be used within a PaginationProvider");
+    throw new Error(
+      "usePaginationContext must be used within a PaginationProvider"
+    );
   }
   return context;
 }

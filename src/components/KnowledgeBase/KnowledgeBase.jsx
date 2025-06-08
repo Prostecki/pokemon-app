@@ -1,29 +1,21 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
-import { useLocation } from "react-router-dom";
 import PokemonList from "./list/PokemonList";
 import PokemonDetails from "./details/PokemonDetails";
 import { usePokemonDetails } from "../../hooks/usePokemonDetails";
+import { usePokemonAPI } from "../../hooks/usePokemonAPI"; // Новый импорт
 import { PaginationProvider } from "../../contexts/PaginationContext";
-
-// Helper function to format pokemon data
-const formatPokemonData = (pokemon) => {
-  const id = pokemon.url.split("/")[6];
-  return {
-    id,
-    name: pokemon.name,
-    image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
-    animatedImage: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/${id}.gif`,
-  };
-};
+import debounce from "lodash/debounce";
 
 export default function KnowledgeBase({ onBackToMenu }) {
+  // Константы и состояния
   const ITEMS_PER_PAGE = 40;
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [allPokemons, setAllPokemons] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [searchResults, setSearchResults] = useState([]);
 
+  // Используем хуки для API и деталей
+  const { loadPokemonPage, searchPokemon, loading, error } = usePokemonAPI();
   const {
     pokemonDetails,
     loading: detailsLoading,
@@ -32,95 +24,132 @@ export default function KnowledgeBase({ onBackToMenu }) {
     resetDetails,
   } = usePokemonDetails();
 
-  // Fetch pokemons from API and append to the list
-  const fetchPokemons = useCallback(
+  // Загрузка страницы покемонов (обертка над API хуком)
+  const handleLoadPage = useCallback(
     async (page) => {
-      try {
-        setLoading(true);
-        const offset = (page - 1) * ITEMS_PER_PAGE;
-        const response = await fetch(
-          `https://pokeapi.co/api/v2/pokemon?limit=${ITEMS_PER_PAGE}&offset=${offset}`
+      if (loading) return;
+
+      const newPokemons = await loadPokemonPage(page, ITEMS_PER_PAGE);
+
+      // Добавляем только новых покемонов
+      setAllPokemons((prevPokemons) => {
+        const existingIds = new Set(prevPokemons.map((p) => p.id));
+        const uniqueNewPokemons = newPokemons.filter(
+          (p) => !existingIds.has(p.id)
         );
-        const data = await response.json();
-        const processedPokemons = data.results.map(formatPokemonData);
-        setAllPokemons((prev) => [...prev, ...processedPokemons]);
-        setCurrentPage(page + 1);
-        return processedPokemons;
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+        return [...prevPokemons, ...uniqueNewPokemons];
+      });
+
+      setCurrentPage(page + 1);
     },
-    [ITEMS_PER_PAGE]
+    [ITEMS_PER_PAGE, loading, loadPokemonPage]
   );
 
-  // Initial load
+  // Загрузка следующей страницы (для infinite scroll)
+  const loadMore = useCallback(async () => {
+    if (loading || searchQuery) {
+      return [];
+    }
+
+    try {
+      const newPokemons = await loadPokemonPage(currentPage, ITEMS_PER_PAGE);
+
+      if (newPokemons && newPokemons.length > 0) {
+        setAllPokemons((prevPokemons) => {
+          const existingIds = new Set(prevPokemons.map((p) => p.id));
+          const uniqueNewPokemons = newPokemons.filter(
+            (p) => !existingIds.has(p.id)
+          );
+
+          if (uniqueNewPokemons.length > 0) {
+            setCurrentPage(currentPage + 1);
+            return [...prevPokemons, ...uniqueNewPokemons];
+          }
+
+          return prevPokemons;
+        });
+      }
+
+      return newPokemons || [];
+    } catch (error) {
+      console.error("Failed to load more Pokemon:", error);
+      return [];
+    }
+  }, [currentPage, ITEMS_PER_PAGE, loading, searchQuery, loadPokemonPage]);
+
+  // Первоначальная загрузка
   useEffect(() => {
-    fetchPokemons(1);
-  }, [fetchPokemons]);
+    // Только при монтировании компонента
+    loadPokemonPage(1, ITEMS_PER_PAGE).then((pokemons) => {
+      setAllPokemons(pokemons || []);
+      setCurrentPage(2);
+    });
+  }, []); // пустая зависимость для выполнения только при монтировании
 
-  // Load more pokemons for infinite scroll
-  const loadMorePokemon = useCallback(
-    () => fetchPokemons(currentPage),
-    [fetchPokemons, currentPage]
+  // Обработчик поиска с debounce
+  const debouncedSearch = useMemo(
+    () =>
+      debounce(async (query) => {
+        if (!query.trim()) {
+          setSearchResults([]);
+          return;
+        }
+
+        const results = await searchPokemon(query);
+        setSearchResults(results);
+      }, 300),
+    [searchPokemon]
   );
 
-  // Handle pokemon selection
+  // Обработчик изменения поискового запроса
+  const handleSearch = useCallback(
+    (query) => {
+      setSearchQuery(query);
+      debouncedSearch(query);
+    },
+    [debouncedSearch]
+  );
+
+  // Выбор покемона для просмотра деталей
   const handleSelectPokemon = useCallback(
     (id) => {
-      const selected = allPokemons.find((char) => char.id === id);
-      if (selected) fetchDetails(selected);
+      fetchDetails(id);
     },
-    [allPokemons, fetchDetails]
+    [fetchDetails]
   );
 
-  // Memoize filtered list to avoid unnecessary renders
-  const filteredCharacters = useMemo(
-    () =>
-      searchQuery
-        ? allPokemons.filter((char) =>
-            char.name.toLowerCase().includes(searchQuery.toLowerCase())
-          )
-        : allPokemons,
-    [allPokemons, searchQuery]
-  );
-
-  // Conditional rendering for loading, error, and details states
-  if (loading && allPokemons.length === 0) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-100">
-        <p className="text-2xl font-bold">Loading pokemons...</p>
-      </div>
-    );
-  }
-
-  if (error) return <p>Error: {error}</p>;
-
-  if (detailsLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-100">
-        <p className="text-2xl font-bold">Loading pokemon details...</p>
-      </div>
-    );
-  }
-
-  if (showDetails && pokemonDetails) {
-    return <PokemonDetails pokemon={pokemonDetails} onBack={resetDetails} />;
-  }
+  // Определяем, какой список покемонов показывать
+  const displayedPokemons = searchQuery ? searchResults : allPokemons;
 
   return (
-    <PaginationProvider
-      characters={filteredCharacters}
-      currentPage={currentPage}
-      loadMorePokemon={loadMorePokemon}
-      onSelect={handleSelectPokemon}
-    >
-      <PokemonList
-        onBackToMenu={onBackToMenu}
-        searchQuery={searchQuery}
-        onSearch={setSearchQuery}
-      />
-    </PaginationProvider>
+    <div className="container mx-auto px-4 py-8">
+      {showDetails ? (
+        <PokemonDetails
+          pokemon={pokemonDetails}
+          loading={detailsLoading}
+          onBack={resetDetails}
+        />
+      ) : (
+        <PaginationProvider
+          characters={displayedPokemons}
+          currentPage={currentPage}
+          loadMorePokemon={loadMore}
+          onSelect={handleSelectPokemon}
+        >
+          <>
+            <PokemonList
+              onBackToMenu={onBackToMenu}
+              searchQuery={searchQuery}
+              onSearch={handleSearch}
+            />
+            {loading && (
+              <div className="flex justify-center my-4">
+                <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            )}
+          </>
+        </PaginationProvider>
+      )}
+    </div>
   );
 }

@@ -2,13 +2,31 @@ import { useNavigate } from "react-router-dom";
 import MenuButton from "../../StartMenu/MenuButton";
 import SearchBar from "./SearchBar";
 import { usePaginationContext } from "../../../contexts/PaginationContext";
+import { useState, useEffect, useCallback } from "react";
 import useInfiniteScroll from "../../../hooks/useInfiniteScroll";
 
 export default function PokemonList({ onBackToMenu, searchQuery, onSearch }) {
   const navigate = useNavigate();
   const { characters, currentPage, loadMorePokemon } = usePaginationContext();
-  
-  const { isFetching, setObserverTarget } = useInfiniteScroll(loadMorePokemon);
+
+  // Определяем, должен ли работать бесконечный скролл
+  const scrollEnabled = !searchQuery && characters.length > 0;
+
+  // Безопасная функция загрузки
+  const safeLoadMore = useCallback(async () => {
+    if (typeof loadMorePokemon === "function") {
+      return await loadMorePokemon();
+    }
+    return [];
+  }, [loadMorePokemon]);
+
+  // Используем обновленный хук с опциями
+  const { isFetching, hasMore, setObserverTarget } = useInfiniteScroll(
+    safeLoadMore,
+    {
+      enabled: scrollEnabled,
+    }
+  );
 
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
@@ -56,16 +74,18 @@ export default function PokemonList({ onBackToMenu, searchQuery, onSearch }) {
               </div>
             ))}
           </div>
-          
-          {/* Loading indicator and observer target */}
-          <div 
-            ref={setObserverTarget} 
-            className="flex justify-center items-center py-8"
-          >
-            {isFetching && (
-              <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-            )}
-          </div>
+
+          {/* Показываем загрузчик и observer только при необходимости */}
+          {scrollEnabled && hasMore && (
+            <div
+              ref={setObserverTarget}
+              className="flex justify-center items-center h-20 mt-4"
+            >
+              {isFetching && (
+                <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+              )}
+            </div>
+          )}
         </>
       )}
     </div>
