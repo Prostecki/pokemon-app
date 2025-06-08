@@ -1,85 +1,87 @@
 import { useState, useCallback } from "react";
+import { fetchPokemonList, fetchPokemonByUrl } from "../utils/pokemonApi";
 
-export function usePokemonData() {
-  // Общие состояния из обоих хуков
+export function usePokemon(itemsPerPage = 40) {
+  // List of pokemons for display
+  const [pokemons, setPokemons] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Details of the selected pokemon
   const [pokemonDetails, setPokemonDetails] = useState(null);
   const [evolutions, setEvolutions] = useState([]);
   const [showDetails, setShowDetails] = useState(false);
-  const [totalCount, setTotalCount] = useState(0);
 
-  // Функция форматирования из usePokemonAPI
-  const formatPokemonData = (pokemon) => {
-    const id = pokemon.url.split("/")[6];
-    return {
-      id,
-      name: pokemon.name,
-      image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
-      animatedImage: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/${id}.gif`,
-    };
-  };
+  // Load a page of pokemons with detailed images
+  const loadPokemonPage = useCallback(
+    async (page) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await fetchPokemonList(page, itemsPerPage);
+        setTotalCount(data.count);
 
-  // Загрузка страницы покемонов из usePokemonAPI
-  const loadPokemonPage = useCallback(async (page, itemsPerPage) => {
-    setLoading(true);
-    setError(null);
+        // Fetch details for each pokemon card (for better images)
+        const characterDetails = await Promise.all(
+          data.results.map(async (pokemon) => {
+            const details = await fetchPokemonByUrl(pokemon.url);
+            return {
+              id: details.id,
+              name: details.name,
+              image: details.sprites.other["official-artwork"].front_default,
+              animatedImage:
+                details.sprites.versions?.["generation-v"]?.["black-white"]
+                  ?.animated?.front_default || null,
+              url: pokemon.url,
+            };
+          })
+        );
 
-    try {
-      const offset = (page - 1) * itemsPerPage;
-      const response = await fetch(
-        `https://pokeapi.co/api/v2/pokemon?limit=${itemsPerPage}&offset=${offset}`
-      );
-
-      if (!response.ok) throw new Error("Failed to fetch Pokémon data");
-
-      const data = await response.json();
-
-      if (page === 1) {
-        setTotalCount(data.count || 0);
+        setPokemons(characterDetails);
+        return characterDetails;
+      } catch (err) {
+        setError(err.message);
+        return [];
+      } finally {
+        setLoading(false);
       }
+    },
+    [itemsPerPage]
+  );
 
-      const formattedPokemons = data.results.map(formatPokemonData);
-      return formattedPokemons;
-    } catch (err) {
-      setError(err.message);
-      console.error("Error loading Pokemon:", err);
-      return [];
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  // Поиск покемонов из usePokemonAPI
+  // Search pokemons by name (basic info, no details)
   const searchPokemon = useCallback(async (query) => {
     if (!query.trim()) return [];
-
     setLoading(true);
     setError(null);
-
     try {
-      // Кешировать результаты всех покемонов в sessionStorage
       let allPokemon = sessionStorage.getItem("all_pokemon");
-
       if (!allPokemon) {
         const response = await fetch(
           "https://pokeapi.co/api/v2/pokemon?limit=1000"
         );
         if (!response.ok) throw new Error("Search failed");
-
         const data = await response.json();
         allPokemon = JSON.stringify(data.results);
         sessionStorage.setItem("all_pokemon", allPokemon);
       } else {
         allPokemon = JSON.parse(allPokemon);
       }
-
       const lowerQuery = query.toLowerCase();
       const matches = allPokemon.filter((pokemon) =>
         pokemon.name.toLowerCase().includes(lowerQuery)
       );
-
-      return matches.map(formatPokemonData);
+      // For search, use basic images, no details
+      return matches.map((pokemon) => {
+        const id = pokemon.url.split("/")[6];
+        return {
+          id,
+          name: pokemon.name,
+          image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
+          animatedImage: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/${id}.gif`,
+        };
+      });
     } catch (err) {
       setError("Search failed: " + err.message);
       return [];
@@ -88,52 +90,41 @@ export function usePokemonData() {
     }
   }, []);
 
-  // Извлечение цепочки эволюции - объединяем обе версии, используя более полную из usePokemonDetails
+  // Extract evolution chain for a pokemon
   const extractEvolutionChain = useCallback(async (chain) => {
     const evolutions = [];
     let current = chain;
-
     while (current) {
       const id = current.species.url.split("/").filter(Boolean).pop();
       const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
       const data = await response.json();
-
       evolutions.push({
         id,
         name: data.name,
         image: data.sprites.other["official-artwork"].front_default,
       });
-
-      current = current.evolves_to[0]; // Переходим к следующей эволюции
+      current = current.evolves_to[0];
     }
-
     return evolutions;
   }, []);
 
-  // Получение деталей о конкретном покемоне - берем более полную версию из usePokemonDetails
+  // Fetch detailed info for a selected pokemon
   const fetchDetails = useCallback(
     async (id) => {
       if (!id) return;
-
       setLoading(true);
       setError(null);
-
       try {
-        // Базовая информация о покемоне
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-        if (!response.ok)
-          throw new Error("Не удалось получить данные о покемоне");
-
+        if (!response.ok) throw new Error("Failed to fetch pokemon data");
         const data = await response.json();
 
-        // Запрос данных о виде для цепочки эволюции
         const speciesResponse = await fetch(data.species.url);
         if (!speciesResponse.ok)
-          throw new Error("Не удалось получить данные о виде");
-
+          throw new Error("Failed to fetch species data");
         const speciesData = await speciesResponse.json();
 
-        // Запрос цепочки эволюции
+        // Fetch evolution chain
         if (speciesData.evolution_chain?.url) {
           const evolutionResponse = await fetch(
             speciesData.evolution_chain.url
@@ -147,18 +138,17 @@ export function usePokemonData() {
           }
         }
 
-        // Добавляем описание из данных о виде
+        // Get description from species data
         const description =
           speciesData.flavor_text_entries?.find(
             (entry) => entry.language.name === "en"
-          )?.flavor_text || "Описание отсутствует";
+          )?.flavor_text || "No description available";
 
-        // Обрабатываем видимые данные
-        const processedData = {
+        setPokemonDetails({
           id: data.id,
           name: data.name,
-          height: data.height / 10, // переводим в метры
-          weight: data.weight / 10, // переводим в кг
+          height: data.height / 10,
+          weight: data.weight / 10,
           types: data.types.map((t) => t.type.name),
           stats: data.stats.map((s) => ({
             name: s.stat.name,
@@ -184,13 +174,10 @@ export function usePokemonData() {
           growthRate: speciesData.growth_rate?.name || "Unknown",
           captureRate: speciesData.capture_rate || "Unknown",
           generation: speciesData.generation?.name || "Unknown",
-        };
-
-        setPokemonDetails(processedData);
+        });
         setShowDetails(true);
       } catch (err) {
         setError(err.message);
-        console.error("Ошибка при получении данных:", err);
       } finally {
         setLoading(false);
       }
@@ -198,22 +185,20 @@ export function usePokemonData() {
     [extractEvolutionChain]
   );
 
-  // Сброс деталей
+  // Reset pokemon details view
   const resetDetails = useCallback(() => {
     setShowDetails(false);
   }, []);
 
   return {
-    // Функции из обоих хуков
+    pokemons, // list for display
+    totalCount,
+    loading,
+    error,
     loadPokemonPage,
     searchPokemon,
     fetchDetails,
     resetDetails,
-
-    // Состояния из обоих хуков
-    loading,
-    error,
-    totalCount,
     pokemonDetails,
     evolutions,
     showDetails,

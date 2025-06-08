@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import "./startmenu.css";
+import "./../../index.css";
 import MenuButton from "./MenuButton";
 
 const buttonVariants = {

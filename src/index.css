@@ -1,1 +1,68 @@
 @import "tailwindcss";
+@font-face {
+  font-family: "Pokemon";
+  src: url("/fonts/Pokemon Outlined.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.menu-buttons {
+  @apply px-4 py-2 w-54 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer;
+}
+
+.pokemon-bg {
+  position: relative;
+  background-image: url("images/pokemon-bg.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.pokemon-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.bg-white {
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(5deg);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delay {
+  animation: float 7s ease-in-out 1s infinite;
+}
+
+.pokemon-font {
+  font-family: "Pokemon";
+  font-weight: bold;
+  font-size: 3.5rem;
+  color: #2a75bb; /* Классический синий Pokémon */
+}
+
+/* Для кнопок (дополнение к существующим стилям MenuButton) */
+.MenuButton {
+  transition: all 0.3s;
+  border-width: 2px;
+}
+
+.MenuButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

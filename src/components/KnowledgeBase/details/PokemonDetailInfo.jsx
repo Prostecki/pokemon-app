@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import PokemonBasicInfo from "./info/PokemonBasicInfo";
+import PokemonBasicInfo from "./PokemonBasicInfo";
 import PokemonMoves from "./moves/PokemonMoves";
 
 export default function PokemonDetailInfo({ pokemon }) {

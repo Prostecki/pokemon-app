@@ -4,10 +4,9 @@ import SearchBar from "./SearchBar";
 import { usePaginationContext } from "../../../contexts/PaginationContext";
 import { useState } from "react";
 
-export default function PokemonList({ onBackToMenu, searchQuery, onSearch }) {
+export default function PokemonList({ searchQuery, onSearch }) {
   const navigate = useNavigate();
-  const { characters, loadMorePokemon, totalCount, currentPage, onSelect } =
-    usePaginationContext();
+  const { characters, loadMorePokemon, onSelect } = usePaginationContext();
   const [isLoading, setIsLoading] = useState(false);
 
   const handlePokemonClick = (id) => {
@@ -26,14 +25,9 @@ export default function PokemonList({ onBackToMenu, searchQuery, onSearch }) {
   };
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
+    <div className="p-4 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold">Choose your Pokemon!</h1>
-        {!searchQuery && (
-          <div className="text-gray-600">
-            {characters.length} of {totalCount || "???"} Pokémon loaded
-          </div>
-        )}
       </div>
 
       <div className="flex justify-between items-center mb-6">
@@ -63,11 +57,7 @@ export default function PokemonList({ onBackToMenu, searchQuery, onSearch }) {
                   {character.name}
                 </h3>
                 <img
-                  src={
-                    character.animatedImage
-                      ? character.animatedImage
-                      : character.image
-                  }
+                  src={character.image}
                   alt={character.name}
                   className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 object-contain mx-auto"
                 />
@@ -82,7 +72,7 @@ export default function PokemonList({ onBackToMenu, searchQuery, onSearch }) {
                 disabled={isLoading}
                 className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-md transition duration-200 disabled:bg-blue-300"
               >
-                {isLoading ? "Загрузка..." : "Загрузить ещё покемонов"}
+                {isLoading ? "Loading..." : "Load more..."}
               </button>
             </div>
           )}
