@@ -1,10 +1,18 @@
 import MenuButton from "../StartMenu/MenuButton";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+
 export default function About() {
   const navigate = useNavigate();
   return (
     <div className="flex flex-col items-center min-h-screen justify-center gap-6">
-      <div className="flex md:max-w-[50rem] flex-col items-center justify-center gap-6 p-4">
+      <motion.div
+        className="flex md:max-w-[50rem] flex-col items-center justify-center gap-6 p-4"
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -40 }}
+        transition={{ duration: 0.4 }}
+      >
         <h1 className="text-2xl font-bold">About This Game</h1>
         <p className="text-gray-700 text-center">
           This game is a fun and interactive way to learn about Pokémon. You can
@@ -25,7 +33,7 @@ export default function About() {
             Pokemon App
           </a>
         </p>
-      </div>
+      </motion.div>
       <MenuButton onClick={() => navigate("/")}>Back to menu</MenuButton>
     </div>
   );

@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { motion } from "framer-motion";
 import Loading from "./components/common/Loading";
 import StartMenu from "./components/StartMenu/StartMenu";
 import StartGame from "./components/StartGame/StartGame";
