@@ -1,10 +1,8 @@
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import PokemonList from "./list/PokemonList";
 import PokemonDetails from "./details/PokemonDetails";
-import { usePokemonDetails } from "../../hooks/usePokemonDetails";
-import { usePokemonAPI } from "../../hooks/usePokemonAPI"; // Новый импорт
+import { usePokemonData } from "../../hooks/usePokemonData"; // Импорт объединенного хука
 import { PaginationProvider } from "../../contexts/PaginationContext";
-import debounce from "lodash/debounce";
 
 export default function KnowledgeBase({ onBackToMenu }) {
   // Константы и состояния
@@ -13,16 +11,21 @@ export default function KnowledgeBase({ onBackToMenu }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [allPokemons, setAllPokemons] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const searchTimeoutRef = useRef(null);
 
-  // Используем хуки для API и деталей
-  const { loadPokemonPage, searchPokemon, loading, error } = usePokemonAPI();
+  // Используем объединенный хук
   const {
-    pokemonDetails,
-    loading: detailsLoading,
-    showDetails,
+    loadPokemonPage,
+    searchPokemon,
     fetchDetails,
     resetDetails,
-  } = usePokemonDetails();
+    loading,
+    error,
+    pokemonDetails,
+    evolutions,
+    showDetails,
+  } = usePokemonData();
 
   // Загрузка страницы покемонов (обертка над API хуком)
   const handleLoadPage = useCallback(
@@ -86,10 +89,18 @@ export default function KnowledgeBase({ onBackToMenu }) {
     });
   }, []); // пустая зависимость для выполнения только при монтировании
 
-  // Обработчик поиска с debounce
-  const debouncedSearch = useMemo(
-    () =>
-      debounce(async (query) => {
+  // Обработчик изменения поискового запроса
+  const handleSearch = useCallback(
+    (query) => {
+      setSearchQuery(query);
+
+      // Отменяем предыдущий таймаут, если есть
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+
+      // Устанавливаем новый таймаут для поиска
+      searchTimeoutRef.current = setTimeout(async () => {
         if (!query.trim()) {
           setSearchResults([]);
           return;
@@ -97,18 +108,19 @@ export default function KnowledgeBase({ onBackToMenu }) {
 
         const results = await searchPokemon(query);
         setSearchResults(results);
-      }, 300),
+      }, 300);
+    },
     [searchPokemon]
   );
 
-  // Обработчик изменения поискового запроса
-  const handleSearch = useCallback(
-    (query) => {
-      setSearchQuery(query);
-      debouncedSearch(query);
-    },
-    [debouncedSearch]
-  );
+  // Очистка таймаута при размонтировании
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Выбор покемона для просмотра деталей
   const handleSelectPokemon = useCallback(
@@ -126,8 +138,9 @@ export default function KnowledgeBase({ onBackToMenu }) {
       {showDetails ? (
         <PokemonDetails
           pokemon={pokemonDetails}
-          loading={detailsLoading}
+          evolutions={evolutions}
           onBack={resetDetails}
+          onSelectEvolution={handleSelectPokemon} // вот здесь!
         />
       ) : (
         <PaginationProvider

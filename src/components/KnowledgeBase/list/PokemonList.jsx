@@ -2,39 +2,43 @@ import { useNavigate } from "react-router-dom";
 import MenuButton from "../../StartMenu/MenuButton";
 import SearchBar from "./SearchBar";
 import { usePaginationContext } from "../../../contexts/PaginationContext";
-import { useState, useEffect, useCallback } from "react";
-import useInfiniteScroll from "../../../hooks/useInfiniteScroll";
+import { useState } from "react";
 
 export default function PokemonList({ onBackToMenu, searchQuery, onSearch }) {
   const navigate = useNavigate();
-  const { characters, currentPage, loadMorePokemon } = usePaginationContext();
+  const { characters, loadMorePokemon, totalCount, currentPage, onSelect } =
+    usePaginationContext();
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Определяем, должен ли работать бесконечный скролл
-  const scrollEnabled = !searchQuery && characters.length > 0;
-
-  // Безопасная функция загрузки
-  const safeLoadMore = useCallback(async () => {
-    if (typeof loadMorePokemon === "function") {
-      return await loadMorePokemon();
+  const handlePokemonClick = (id) => {
+    if (onSelect) {
+      onSelect(id);
     }
-    return [];
-  }, [loadMorePokemon]);
+  };
 
-  // Используем обновленный хук с опциями
-  const { isFetching, hasMore, setObserverTarget } = useInfiniteScroll(
-    safeLoadMore,
-    {
-      enabled: scrollEnabled,
-    }
-  );
+  const handleLoadMore = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      loadMorePokemon().finally(() => {
+        setIsLoading(false);
+      });
+    }, 100);
+  };
 
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-3xl font-bold">Choose your Pokemon!</h1>
+        {!searchQuery && (
+          <div className="text-gray-600">
+            {characters.length} of {totalCount || "???"} Pokémon loaded
+          </div>
+        )}
+      </div>
+
       <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-5">
-          <h1 className="text-3xl font-bold">Choose your Pokemon!</h1>
-          <MenuButton onClick={() => navigate("/")}>Back to menu</MenuButton>
-        </div>
+        <div className="flex items-center gap-5"></div>
+        <MenuButton onClick={() => navigate("/")}>Back to menu</MenuButton>
       </div>
 
       <SearchBar searchQuery={searchQuery} onSearch={onSearch} />
@@ -53,11 +57,7 @@ export default function PokemonList({ onBackToMenu, searchQuery, onSearch }) {
               <div
                 key={character.id}
                 className="p-2 md:p-3 lg:p-4 bg-stone-400/40 shadow cursor-pointer transition transform hover:scale-105"
-                onClick={() =>
-                  navigate(`/base/${character.id}`, {
-                    state: { fromPage: currentPage },
-                  })
-                }
+                onClick={() => handlePokemonClick(character.id)}
               >
                 <h3 className="mt-1 md:mt-2 text-center capitalize font-medium text-xs sm:text-sm md:text-base bg-gradient-to-r from-stone-400/40 via-stone-200 to-stone-400/40 rounded px-2 py-1">
                   {character.name}
@@ -75,15 +75,15 @@ export default function PokemonList({ onBackToMenu, searchQuery, onSearch }) {
             ))}
           </div>
 
-          {/* Показываем загрузчик и observer только при необходимости */}
-          {scrollEnabled && hasMore && (
-            <div
-              ref={setObserverTarget}
-              className="flex justify-center items-center h-20 mt-4"
-            >
-              {isFetching && (
-                <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-              )}
+          {!searchQuery && characters.length > 0 && (
+            <div className="mt-8 flex justify-center">
+              <button
+                onClick={handleLoadMore}
+                disabled={isLoading}
+                className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-md transition duration-200 disabled:bg-blue-300"
+              >
+                {isLoading ? "Загрузка..." : "Загрузить ещё покемонов"}
+              </button>
             </div>
           )}
         </>

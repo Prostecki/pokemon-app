@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getTypeColor } from "../../../utils/getTypeColor";
 
 export default function ChosenPokemon({ pokemon }) {
   const [currentImage, setCurrentImage] = useState(pokemon.image);
+
+  useEffect(() => {
+    setCurrentImage(pokemon.image);
+  }, [pokemon]);
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">

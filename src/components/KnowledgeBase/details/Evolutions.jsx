@@ -1,8 +1,4 @@
-import { useNavigate } from "react-router-dom";
-
-export default function Evolutions({ evolutions }) {
-  const navigate = useNavigate();
-
+export default function Evolutions({ evolutions, onSelect }) {
   if (!evolutions || evolutions.length === 0) {
     return <p className="text-gray-500">No evolutions available.</p>;
   }
@@ -13,7 +9,7 @@ export default function Evolutions({ evolutions }) {
         <div key={pokemon.id} className="flex items-center">
           <div
             className="flex flex-col items-center cursor-pointer transition-transform hover:scale-105"
-            onClick={() => navigate(`/base/${pokemon.id}`)}
+            onClick={() => onSelect && onSelect(pokemon.id)}
           >
             <img
               src={pokemon.image}
