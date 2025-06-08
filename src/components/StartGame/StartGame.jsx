@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CharacterSelector from "./CharacterSelector";
 import PlayerAvatar from "./PlayerAvatar";
-import "./StartGame.css";
+import "./../../index.css";
 
 const ITEMS_COUNT = 40;
 
