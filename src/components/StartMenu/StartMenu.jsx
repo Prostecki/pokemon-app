@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import "./../../index.css";
 import MenuButton from "./MenuButton";
+import HoverMe from "../HoverMe";
 
 const buttonVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -85,6 +86,7 @@ export default function StartMenu() {
               </motion.div>
             ))}
           </div>
+          <HoverMe />
         </motion.div>
       </AnimatePresence>
     </div>

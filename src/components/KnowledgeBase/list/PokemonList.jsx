@@ -26,13 +26,9 @@ export default function PokemonList({ searchQuery, onSearch }) {
   };
 
   return (
-    <div className="p-4 bg-gray-100 min-h-screen">
+    <div className="p-4 bg-gray-100 min-h-screen overflow-x-hidden">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold">Choose your Pokemon!</h1>
-      </div>
-
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-5"></div>
         <MenuButton onClick={() => navigate("/")}>Back to menu</MenuButton>
       </div>
 
@@ -47,7 +43,7 @@ export default function PokemonList({ searchQuery, onSearch }) {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-10">
+          <div className="flex flex-wrap gap- justify-center">
             {characters.map((character) => (
               <PokemonCard
                 key={character.id}
