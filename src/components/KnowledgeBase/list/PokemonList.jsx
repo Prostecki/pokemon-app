@@ -3,6 +3,7 @@ import MenuButton from "../../StartMenu/MenuButton";
 import SearchBar from "./SearchBar";
 import { usePaginationContext } from "../../../contexts/PaginationContext";
 import { useState } from "react";
+import PokemonCard from "./PokemonCard";
 
 export default function PokemonList({ searchQuery, onSearch }) {
   const navigate = useNavigate();
@@ -48,20 +49,11 @@ export default function PokemonList({ searchQuery, onSearch }) {
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-10">
             {characters.map((character) => (
-              <div
+              <PokemonCard
                 key={character.id}
-                className="p-2 md:p-3 lg:p-4 bg-stone-400/40 shadow cursor-pointer transition transform hover:scale-105"
-                onClick={() => handlePokemonClick(character.id)}
-              >
-                <h3 className="mt-1 md:mt-2 text-center capitalize font-medium text-xs sm:text-sm md:text-base bg-gradient-to-r from-stone-400/40 via-stone-200 to-stone-400/40 rounded px-2 py-1">
-                  {character.name}
-                </h3>
-                <img
-                  src={character.image}
-                  alt={character.name}
-                  className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 object-contain mx-auto"
-                />
-              </div>
+                character={character}
+                onClick={handlePokemonClick}
+              />
             ))}
           </div>
 
