@@ -1,9 +1,10 @@
 import { useMotionValue, motion, useSpring, useTransform } from "framer-motion";
 import { useRef } from "react";
+import { HiMiniArrowLongRight } from "react-icons/hi2";
 
 export const HoverLinks = () => {
   return (
-    <section className="bg-blue-500/30 w-full p-4 md:p-8">
+    <section className="bg-blue-500/10 w-full p-4 md:p-8">
       <div className="mx-auto max-w-5xl">
         <Link
           heading="Pokédex Database"
@@ -82,7 +83,7 @@ const Link = ({ heading, imgSrc, subheading, href }) => {
             staggerChildren: 0.075,
             delayChildren: 0.25,
           }}
-          className="relative z-10 block text-4xl font-bold text-neutral-500 transition-colors duration-500 group-hover:text-neutral-50 md:text-6xl"
+          className="relative z-10 block text-4xl font-bold text-white transition-colors duration-500 group-hover:text-neutral-50 md:text-6xl"
         >
           {/* We split whole heading for letters and try to find spaces*/}
           {heading.split("").map((l, i) => (
@@ -135,7 +136,9 @@ const Link = ({ heading, imgSrc, subheading, href }) => {
         }}
         transition={{ type: "spring" }}
         className="relative z-10 p-4"
-      ></motion.div>
+      >
+        <HiMiniArrowLongRight className="text-white text-5xl" />
+      </motion.div>
     </motion.a>
   );
 };
