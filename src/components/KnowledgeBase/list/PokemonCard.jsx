@@ -6,9 +6,9 @@ import {
   useSpring,
 } from "framer-motion";
 
-// Точно такие же константы, как в HoverMe
+// The same constants as in HoverMe
 const ROTATION_RANGE = 40.5;
-const HALF_ROTATION_RANGE = 32.5 / 2; // Явное значение, как в HoverMe
+const HALF_ROTATION_RANGE = 32.5 / 2; // Explicit value, as in HoverMe
 
 export default function PokemonCard({ character, onClick }) {
   const ref = useRef(null);
@@ -16,12 +16,13 @@ export default function PokemonCard({ character, onClick }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
-  // Добавляем настройки пружин для более быстрого отклика
+  // Add spring settings for faster response
   const xSpring = useSpring(x, { stiffness: 400, damping: 25 });
   const ySpring = useSpring(y, { stiffness: 400, damping: 25 });
 
   const transform = useMotionTemplate`rotateX(${xSpring}deg) rotateY(${ySpring}deg)`;
 
+  // Mouse move handler for 3D tilt effect
   const handleMouseMove = (e) => {
     if (!ref.current) return;
     const rect = ref.current.getBoundingClientRect();
@@ -39,6 +40,7 @@ export default function PokemonCard({ character, onClick }) {
     y.set(rY);
   };
 
+  // Reset tilt on mouse leave
   const handleMouseLeave = () => {
     x.set(0);
     y.set(0);
@@ -67,15 +69,15 @@ export default function PokemonCard({ character, onClick }) {
           className="w-full h-full grid"
           style={{ transformStyle: "preserve-3d" }}
           initial={{ translateZ: "20px" }}
-          whileHover={{ translateZ: "20px" }} // show up the image on hover
-          whileTap={{ scale: 0.95 }} // Уменьшение при нажатии
+          whileHover={{ translateZ: "20px" }} // Show up the image on hover
+          whileTap={{ scale: 0.95 }} // Slightly shrink on tap
           transition={{ duration: 0.2 }}
         >
           <motion.img
             src={character.image}
             alt={character.name}
             className="sm:w-24 sm:h-24 md:w-28 md:h-28 object-contain my-auto"
-            whileHover={{ scale: 1.05 }} // Дополнительное небольшое увеличение
+            whileHover={{ scale: 1.05 }} // Slightly enlarge on hover
           />
           <motion.h3
             className="mt-2 text-center capitalize font-semibold text-base sm:text-lg md:text-xl"

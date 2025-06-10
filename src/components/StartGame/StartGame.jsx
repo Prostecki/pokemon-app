@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { usePokemon } from "../../hooks/usePokemon";
 import CharacterSelector from "./CharacterSelector";
 import PlayerAvatar from "./PlayerAvatar";
 import "./../../index.css";
@@ -8,49 +9,16 @@ const ITEMS_COUNT = 40;
 
 export default function StartGame() {
   const navigate = useNavigate();
-  const [characters, setCharacters] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [step, setStep] = useState(1); // 1 - P1, 2 - P2, 3 - both have chosen
+  const { characters, loading } = usePokemon(ITEMS_COUNT);
+  const [step, setStep] = useState(1);
   const [p1, setP1] = useState(null);
   const [p2, setP2] = useState(null);
   const [tempSelect, setTempSelect] = useState(null);
   const [isSelecting, setIsSelecting] = useState(false);
 
-  // Fetch 40 pokemons on mount
-  useEffect(() => {
-    async function fetchPokemons() {
-      setLoading(true);
-      try {
-        const res = await fetch(
-          `https://pokeapi.co/api/v2/pokemon?limit=${ITEMS_COUNT}`
-        );
-        const data = await res.json();
-        // Fetch details for each pokemon to get images
-        const details = await Promise.all(
-          data.results.map(async (poke) => {
-            const resp = await fetch(poke.url);
-            const info = await resp.json();
-            return {
-              id: info.id,
-              name: info.name,
-              img: info.sprites.front_default,
-            };
-          })
-        );
-        setCharacters(details);
-        setTempSelect(details[0]?.id || null);
-      } catch (e) {
-        setCharacters([]);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchPokemons();
-  }, []);
-
   const borderColors = {
-    p1: "#FFD700", // gold
-    p2: "#00BFFF", // deep sky blue
+    p1: "#FFD700",
+    p2: "#00BFFF",
   };
 
   const handleAccept = () => {
@@ -75,7 +43,7 @@ export default function StartGame() {
     }
   };
 
-  const getChar = (id) => characters.find((c) => c.id === id);
+  const getChar = (id) => characters?.find((c) => c.id === id);
 
   const animatedCircle = {
     animation: "pulse 1s infinite alternate",
@@ -84,21 +52,85 @@ export default function StartGame() {
 
   if (loading) {
     return (
-      <div className="startgame-root" style={{ justifyContent: "center" }}>
+      <div
+        className="startgame-root"
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "60vh",
+          fontSize: 22,
+          color: "#38bdf8",
+          fontWeight: 600,
+          letterSpacing: "0.04em",
+        }}
+      >
         <div>Loading pokemons...</div>
       </div>
     );
   }
 
   return (
-    <div className="startgame-root">
-      <div className="startgame-header">
-        <button onClick={() => navigate("/")} className="startgame-menu-btn">
-          Back to Menu
+    <div
+      className="startgame-root"
+      style={{
+        minHeight: "100vh",
+        background: "linear-gradient(120deg, #f0f9ff 0%, #e0e7ff 100%)",
+        padding: "32px 0",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <div
+        className="startgame-header"
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "flex-start",
+          marginBottom: 24,
+        }}
+      >
+        <button
+          onClick={() => navigate("/")}
+          className="startgame-menu-btn"
+          style={{
+            background: "#fff",
+            border: "none",
+            borderRadius: 8,
+            padding: "8px 18px",
+            fontWeight: 600,
+            fontSize: 16,
+            color: "#38bdf8",
+            boxShadow: "0 2px 8px #38bdf822",
+            cursor: "pointer",
+            transition: "background 0.2s, color 0.2s",
+          }}
+        >
+          ← Back to Menu
         </button>
       </div>
-      <h2 className="startgame-title">Choose Your Fighters</h2>
-      <div className="startgame-players-row">
+      <h2
+        className="startgame-title"
+        style={{
+          fontSize: 32,
+          fontWeight: 800,
+          color: "#0ea5e9",
+          marginBottom: 32,
+          letterSpacing: "0.04em",
+          textShadow: "0 2px 8px #38bdf822",
+        }}
+      >
+        Choose Your Fighters
+      </h2>
+      <div
+        className="startgame-players-row"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 48,
+          marginBottom: 36,
+        }}
+      >
         <PlayerAvatar
           label="P1"
           color={borderColors.p1}
@@ -108,7 +140,18 @@ export default function StartGame() {
           getChar={getChar}
           animatedCircle={animatedCircle}
         />
-        <div className="startgame-vs">VS</div>
+        <div
+          className="startgame-vs"
+          style={{
+            fontSize: 36,
+            fontWeight: 700,
+            color: "#64748b",
+            letterSpacing: "0.08em",
+            textShadow: "0 2px 8px #38bdf822",
+          }}
+        >
+          VS
+        </div>
         <PlayerAvatar
           label="P2"
           color={borderColors.p2}
@@ -120,7 +163,16 @@ export default function StartGame() {
         />
       </div>
       {step < 3 && (
-        <div className="startgame-bottom">
+        <div
+          className="startgame-bottom"
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "center",
+            gap: 32,
+            marginTop: 24,
+          }}
+        >
           <CharacterSelector
             characters={characters}
             selectedId={tempSelect}
@@ -143,9 +195,23 @@ export default function StartGame() {
               onClick={handleAccept}
               disabled={!isSelecting}
               className="startgame-btn-accept"
-              style={
-                isSelecting ? {} : { background: "#888", cursor: "not-allowed" }
-              }
+              style={{
+                background: isSelecting
+                  ? "linear-gradient(90deg, #38bdf8 0%, #0ea5e9 100%)"
+                  : "#94a3b8",
+                color: "#fff",
+                border: "none",
+                borderRadius: 8,
+                fontWeight: 700,
+                fontSize: 18,
+                padding: "12px 32px",
+                marginBottom: 8,
+                cursor: isSelecting ? "pointer" : "not-allowed",
+                boxShadow: isSelecting
+                  ? "0 2px 12px #38bdf822"
+                  : "0 1px 4px #94a3b822",
+                transition: "background 0.2s, box-shadow 0.2s",
+              }}
             >
               Accept
             </button>
@@ -153,9 +219,18 @@ export default function StartGame() {
               onClick={handleCancel}
               disabled={!isSelecting}
               className="startgame-btn-cancel"
-              style={
-                isSelecting ? {} : { background: "#888", cursor: "not-allowed" }
-              }
+              style={{
+                background: "#fff",
+                color: "#0ea5e9",
+                border: "2px solid #0ea5e9",
+                borderRadius: 8,
+                fontWeight: 700,
+                fontSize: 18,
+                padding: "12px 32px",
+                cursor: isSelecting ? "pointer" : "not-allowed",
+                boxShadow: "0 1px 4px #38bdf822",
+                transition: "background 0.2s, color 0.2s",
+              }}
             >
               Cancel
             </button>
@@ -163,7 +238,23 @@ export default function StartGame() {
         </div>
       )}
       {step === 3 && (
-        <div className="startgame-fighters-ready">Fighters ready!</div>
+        <div
+          className="startgame-fighters-ready"
+          style={{
+            marginTop: 48,
+            fontSize: 28,
+            fontWeight: 700,
+            color: "#22c55e",
+            letterSpacing: "0.04em",
+            textShadow: "0 2px 8px #22c55e22",
+            background: "#f0fdf4",
+            borderRadius: 12,
+            padding: "18px 48px",
+            boxShadow: "0 2px 12px #22c55e22",
+          }}
+        >
+          Fighters ready!
+        </div>
       )}
     </div>
   );
