@@ -9,7 +9,7 @@ export default function PokemonDetails({
   evolutions,
   loading,
   onBack,
-  onSelectEvolution, // добавь этот проп
+  onSelectEvolution,
 }) {
   if (loading) {
     return <PokemonDetailsLoading />;
@@ -41,6 +41,7 @@ export default function PokemonDetails({
               <Evolutions
                 evolutions={evolutions}
                 onSelect={onSelectEvolution}
+                currentPokemonId={pokemon.id} // Передаем ID текущего покемона
               />
             </div>
           )}

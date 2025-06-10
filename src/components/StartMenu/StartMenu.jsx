@@ -86,7 +86,7 @@ export default function StartMenu() {
               </motion.div>
             ))}
           </div>
-          <HoverMe />
+          {/* <HoverMe /> */}
         </motion.div>
       </AnimatePresence>
     </div>
