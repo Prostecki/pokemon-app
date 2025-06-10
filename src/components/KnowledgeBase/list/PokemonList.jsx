@@ -1,14 +1,17 @@
 import { useNavigate } from "react-router-dom";
-import MenuButton from "../../StartMenu/MenuButton";
 import SearchBar from "./SearchBar";
 import { usePaginationContext } from "../../../contexts/PaginationContext";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import PokemonCard from "./PokemonCard";
+import { ShinyButton } from "@/components/magicui/shiny-button";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function PokemonList({ searchQuery, onSearch }) {
   const navigate = useNavigate();
   const { characters, loadMorePokemon, onSelect } = usePaginationContext();
   const [isLoading, setIsLoading] = useState(false);
+  const [prevCharactersCount, setPrevCharactersCount] = useState(0);
+  const newPokemonRef = useRef(null);
 
   const handlePokemonClick = (id) => {
     if (onSelect) {
@@ -18,6 +21,7 @@ export default function PokemonList({ searchQuery, onSearch }) {
 
   const handleLoadMore = () => {
     setIsLoading(true);
+    setPrevCharactersCount(characters.length);
     setTimeout(() => {
       loadMorePokemon().finally(() => {
         setIsLoading(false);
@@ -25,11 +29,27 @@ export default function PokemonList({ searchQuery, onSearch }) {
     }, 100);
   };
 
+  // Scroll to new Pokemon after loading
+  // useEffect(() => {
+  //   if (
+  //     !isLoading &&
+  //     characters.length > prevCharactersCount &&
+  //     newPokemonRef.current
+  //   ) {
+  //     newPokemonRef.current.scrollIntoView({
+  //       behavior: "smooth",
+  //       block: "start",
+  //     });
+  //   }
+  // }, [characters.length, isLoading, prevCharactersCount]);
+
   return (
     <div className="p-4 bg-gray-100 min-h-screen overflow-x-hidden">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-3xl font-bold">Choose your Pokemon!</h1>
-        <MenuButton onClick={() => navigate("/")}>Back to menu</MenuButton>
+        <h1 id="top" className="text-3xl font-bold">
+          Choose your Pokemon!
+        </h1>
+        <ShinyButton onClick={() => navigate("/")}>Back to menu</ShinyButton>
       </div>
 
       <SearchBar searchQuery={searchQuery} onSearch={onSearch} />
@@ -43,14 +63,27 @@ export default function PokemonList({ searchQuery, onSearch }) {
         </div>
       ) : (
         <>
-          <div className="flex flex-wrap gap- justify-center">
-            {characters.map((character) => (
-              <PokemonCard
-                key={character.id}
-                character={character}
-                onClick={handlePokemonClick}
-              />
-            ))}
+          <div className="flex flex-wrap gap-1 justify-center">
+            <AnimatePresence>
+              {characters.map((character, index) => (
+                <motion.div
+                  key={character.id}
+                  initial={
+                    index >= prevCharactersCount
+                      ? { opacity: 0 }
+                      : { opacity: 1 }
+                  }
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.2 }}
+                  ref={index === prevCharactersCount ? newPokemonRef : null}
+                >
+                  <PokemonCard
+                    character={character}
+                    onClick={handlePokemonClick}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
 
           {!searchQuery && characters.length > 0 && (
@@ -66,6 +99,14 @@ export default function PokemonList({ searchQuery, onSearch }) {
           )}
         </>
       )}
+      <ShinyButton
+        onClick={() => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+        className="fixed bottom-2 border border-black/10 right-2 bg-slate-200/40"
+      >
+        Up
+      </ShinyButton>
     </div>
   );
 }

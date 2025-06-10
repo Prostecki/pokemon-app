@@ -1,7 +1,12 @@
+/* ========================================
+   1. IMPORTS AND SETUP
+   ======================================== */
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+
+/* Font definitions */
 @font-face {
   font-family: "Pokemon";
   src: url("/fonts/Pokemon Outlined.ttf") format("truetype");
@@ -9,172 +14,9 @@
   font-style: normal;
 }
 
-.menu-buttons {
-  @apply px-4 py-2 w-54 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer;
-}
-
-.pokemon-bg {
-  position: relative;
-  background-image: url("images/pokemon-bg.jpg");
-  background-size: cover;
-  background-position: center;
-}
-
-.pokemon-bg::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1;
-  pointer-events: none;
-}
-
-.bg-white {
-  position: relative;
-  z-index: 2;
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-20px) rotate(5deg);
-  }
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-.animate-float-delay {
-  animation: float 7s ease-in-out 1s infinite;
-}
-
-.pokemon-font {
-  font-family: "Pokemon";
-  font-weight: bold;
-  font-size: 3.5rem;
-  color: #2a75bb; /* Классический синий Pokémon */
-}
-
-/* Для кнопок (дополнение к существующим стилям MenuButton) */
-.MenuButton {
-  transition: all 0.3s;
-  border-width: 2px;
-}
-
-.MenuButton:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.card::before {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    120deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.6) 50%,
-    rgba(255, 255, 255, 0.1) 100%
-  );
-  transform: rotate(25deg);
-  pointer-events: none;
-  transition: all 0.3s ease;
-}
-
-.pokeball-container {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  animation: bounce 1s infinite alternate, rotate 3s infinite linear;
-  transform-origin: center;
-}
-
-/* Stop rotation when opening */
-.pokeball-container.opening {
-  animation: none;
-}
-
-.pokeball-top {
-  position: absolute;
-  width: 100%;
-  height: 50%;
-  background-color: #ff0000;
-  border-radius: 60px 60px 0 0;
-  border: 4px solid #333;
-  top: 0;
-  transition: transform 0.8s ease-in-out;
-}
-
-.pokeball-bottom {
-  position: absolute;
-  width: 100%;
-  height: 50%;
-  background-color: white;
-  border-radius: 0 0 60px 60px;
-  border: 4px solid #333;
-  bottom: 0;
-  transition: transform 0.8s ease-in-out;
-}
-
-.pokeball-center {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  background-color: white;
-  border: 4px solid #333;
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-  animation: pulse 1.5s infinite alternate;
-}
-
-/* Opening animation */
-.pokeball-container.opening .pokeball-top {
-  transform: translateY(-40px);
-}
-
-.pokeball-container.opening .pokeball-bottom {
-  transform: translateY(40px);
-}
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes bounce {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-15px);
-  }
-}
-
-@keyframes pulse {
-  0% {
-    transform: translate(-50%, -50%) scale(1);
-    background-color: white;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1.2);
-    background-color: #f8f8f8;
-  }
-}
-
+/* ========================================
+   2. THEME VARIABLES AND CUSTOMIZATION
+   ======================================== */
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -282,13 +124,9 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
-/* html,
-body,
-#root,
-* {
-  cursor: none !important;
-} */
-
+/* ========================================
+   3. BASE STYLES
+   ======================================== */
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -296,4 +134,310 @@ body,
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Uncomment to disable cursor
+html,
+body,
+#root,
+* {
+  cursor: none !important;
+} */
+
+/* ========================================
+   4. LAYOUT STYLES
+   ======================================== */
+.pokemon-bg {
+  position: relative;
+  min-height: 100vh;
+  background-image: url("images/pokemon-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.pokemon-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.bg-white {
+  position: relative;
+  z-index: 2;
+}
+
+/* ========================================
+   5. TYPOGRAPHY
+   ======================================== */
+.pokemon-font {
+  font-family: "Pokemon";
+  font-weight: bold;
+  font-size: 3.5rem;
+  color: #2a75bb; /* Классический синий Pokémon */
+}
+
+/* ========================================
+   6. COMPONENT STYLES
+   ======================================== */
+/* --- Buttons --- */
+.menu-buttons {
+  @apply px-4 py-2 w-54 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer;
+}
+
+.MenuButton {
+  transition: all 0.3s;
+  border-width: 2px;
+}
+
+.MenuButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Cards --- */
+.card {
+  width: 200px;
+  border-radius: 20px;
+  background: #1b233d; /* Меняем с #1b233d */
+  padding: 5px;
+  overflow: hidden;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 7px 20px 0px;
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  /* background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0.1) 100%
+  ); */
+  transform: rotate(25deg);
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.card .top-section {
+  height: 150px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  /* background: linear-gradient(45deg, #8ed500 0%, #8ed500 100%); */
+  position: relative;
+}
+
+.card .top-section .border {
+  border-bottom-right-radius: 10px;
+  height: 30px;
+  width: 130px;
+  background: #1a1a2e; /* Меняем с #141414 */
+  position: relative;
+  transform: skew(-40deg);
+  box-shadow: -10px -10px 0 0 #1a1a2e; /* Меняем с #141414 */
+}
+
+.card .top-section .border::before {
+  content: "";
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  top: 0;
+  right: -15px;
+  background: rgba(255, 255, 255, 0);
+  border-top-left-radius: 10px;
+  box-shadow: -5px -5px 0 2px #131340; /* Меняем с #1b233d */
+}
+
+.card .top-section::before {
+  content: "";
+  position: absolute;
+  top: 30px;
+  left: 0;
+  background: rgba(255, 255, 255, 0);
+  height: 15px;
+  width: 15px;
+  border-top-left-radius: 15px;
+  box-shadow: -5px -5px 0 2px #131340;
+  /* Меняем с #1b233d */
+}
+
+.card .top-section .icons {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 30px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.card .top-section .icons .logo {
+  height: 100%;
+  aspect-ratio: 1;
+  padding: 7px 0 7px 15px;
+}
+
+.card .bottom-section {
+  margin-top: 15px;
+  padding: 10px 5px;
+}
+
+.card .bottom-section .title {
+  display: block;
+  font-size: 17px;
+  font-weight: bolder;
+  color: white;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+.card .bottom-section .row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.card .bottom-section .row .item {
+  flex: 30%;
+  text-align: center;
+  padding: 5px;
+  color: #fff;
+}
+
+.card .bottom-section .row .item .big-text {
+  font-size: 12px;
+  display: block;
+}
+
+.card .bottom-section .row .item .regular-text {
+  font-size: 9px;
+}
+
+.card .bottom-section .row .item:nth-child(2) {
+  border-left: 1px solid rgba(255, 255, 255, 0.126);
+  border-right: 1px solid rgba(255, 255, 255, 0.126);
+}
+
+/* --- Pokeball --- */
+.pokeball-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  animation: bounce 1s infinite alternate, rotate 3s infinite linear;
+  transform-origin: center;
+}
+
+.pokeball-container.opening {
+  animation: none;
+}
+
+.pokeball-top {
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  background-color: #ff0000;
+  border-radius: 60px 60px 0 0;
+  border: 4px solid #333;
+  top: 0;
+  transition: transform 0.8s ease-in-out;
+}
+
+.pokeball-bottom {
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  background-color: white;
+  border-radius: 0 0 60px 60px;
+  border: 4px solid #333;
+  bottom: 0;
+  transition: transform 0.8s ease-in-out;
+}
+
+.pokeball-center {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background-color: white;
+  border: 4px solid #333;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  animation: pulse 1.5s infinite alternate;
+}
+
+/* ========================================
+   7. ANIMATIONS
+   ======================================== */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(5deg);
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    background-color: white;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.2);
+    background-color: #f8f8f8;
+  }
+}
+
+/* ========================================
+   8. ANIMATION UTILITY CLASSES
+   ======================================== */
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delay {
+  animation: float 7s ease-in-out 1s infinite;
+}
+
+/* Opening animation */
+.pokeball-container.opening .pokeball-top {
+  transform: translateY(-40px);
+}
+
+.pokeball-container.opening .pokeball-bottom {
+  transform: translateY(40px);
 }

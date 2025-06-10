@@ -34,6 +34,7 @@ export function usePokemon(itemsPerPage = 40) {
                 details.sprites.versions?.["generation-v"]?.["black-white"]
                   ?.animated?.front_default || null,
               url: pokemon.url,
+              types: details.types.map((t) => t.type.name),
             };
           })
         );

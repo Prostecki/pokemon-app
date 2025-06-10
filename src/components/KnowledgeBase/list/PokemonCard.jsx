@@ -1,92 +1,100 @@
-import { useRef } from "react";
-import {
-  motion,
-  useMotionTemplate,
-  useMotionValue,
-  useSpring,
-} from "framer-motion";
-
-// The same constants as in HoverMe
-const ROTATION_RANGE = 40.5;
-const HALF_ROTATION_RANGE = 32.5 / 2; // Explicit value, as in HoverMe
+import { motion } from "framer-motion";
+import { getTypeColor } from "../../../utils/getTypeColor";
+import { getGradientFromColor } from "../../../utils/adjustColor";
+import { Card3D } from "../../common/Card3D";
 
 export default function PokemonCard({ character, onClick }) {
-  const ref = useRef(null);
+  // Определяем основной тип покемона и создаем градиент
+  const getTypeBackground = () => {
+    // Упрощенная проверка на наличие типа
+    let mainType = "normal"; // значение по умолчанию
 
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
+    // Проверяем есть ли массив типов
+    if (
+      character.types &&
+      Array.isArray(character.types) &&
+      character.types.length > 0
+    ) {
+      mainType = character.types[0]; // берем первый тип из массива
+    }
+    // Если есть просто строка типа
+    else if (character.type) {
+      mainType = character.type;
+    }
 
-  // Add spring settings for faster response
-  const xSpring = useSpring(x, { stiffness: 400, damping: 25 });
-  const ySpring = useSpring(y, { stiffness: 400, damping: 25 });
-
-  const transform = useMotionTemplate`rotateX(${xSpring}deg) rotateY(${ySpring}deg)`;
-
-  // Mouse move handler for 3D tilt effect
-  const handleMouseMove = (e) => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-
-    const width = rect.width;
-    const height = rect.height;
-
-    const mouseX = (e.clientX - rect.left) * ROTATION_RANGE;
-    const mouseY = (e.clientY - rect.top) * ROTATION_RANGE;
-
-    const rX = (mouseY / height - HALF_ROTATION_RANGE) * -1;
-    const rY = mouseX / width - HALF_ROTATION_RANGE;
-
-    x.set(rX);
-    y.set(rY);
+    // Получаем цвет и создаем градиент
+    const typeColor = getTypeColor(mainType);
+    return getGradientFromColor(typeColor, 30);
   };
 
-  // Reset tilt on mouse leave
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
+  // Содержимое верхней части карточки
+  const topSectionContent = character.image && (
+    <motion.div
+      style={{
+        transformStyle: "preserve-3d",
+        display: "flex",
+        margin: "2rem auto",
+        justifyContent: "center",
+        alignItems: "center",
+        position: "relative",
+        zIndex: 5,
+        height: "100%",
+      }}
+    >
+      <motion.img
+        src={character.image}
+        alt={character.name}
+        style={{
+          width: "150px",
+          height: "150px",
+          filter: "drop-shadow(rgba(0, 0, 0, 0.5) 3px 3px 5px)",
+          objectFit: "contain",
+          transform: "translateZ(5px)",
+        }}
+        whileHover={{ scale: 1.05 }}
+      />
+    </motion.div>
+  );
+
+  // Содержимое нижней части карточки
+  const bottomSectionContent = (
+    <>
+      <motion.span
+        className="title mt-5"
+        style={{ transform: "translateZ(15px)" }}
+      >
+        {character.name?.toUpperCase() || "POKEMON"}
+      </motion.span>
+
+      <div className="row row1">
+        <div className="item">
+          <span className="big-text">{character.id || "???"}</span>
+          <span className="regular-text">ID</span>
+        </div>
+        <div className="item">
+          <span className="big-text">
+            {character.types
+              ? Array.isArray(character.types)
+                ? character.types.join("/")
+                : character.types
+              : character.type || "???"}
+          </span>
+          <span className="regular-text">Type</span>
+        </div>
+        <div className="item">
+          <span className="big-text">{character.level || "???"}</span>
+          <span className="regular-text">Level</span>
+        </div>
+      </div>
+    </>
+  );
 
   return (
-    <div style={{ perspective: "1200px" }} className="relative">
-      <motion.div
-        ref={ref}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          transformStyle: "preserve-3d",
-          transform,
-          willChange: "transform",
-        }}
-        whileHover={{
-          scale: 1.1,
-          boxShadow: "0 10px 30px 0 rgba(80, 80, 200, 0.3)",
-          zIndex: 10,
-        }}
-        className="relative h-48 w-36 sm:h-56 sm:w-44 md:h-64 md:w-52 border-1 border-slate-500/20 rounded-sm bg-white shadow-lg cursor-pointer grid place-content-center"
-        onClick={() => onClick(character.id)}
-      >
-        <motion.div
-          className="w-full h-full grid"
-          style={{ transformStyle: "preserve-3d" }}
-          initial={{ translateZ: "20px" }}
-          whileHover={{ translateZ: "20px" }} // Show up the image on hover
-          whileTap={{ scale: 0.95 }} // Slightly shrink on tap
-          transition={{ duration: 0.2 }}
-        >
-          <motion.img
-            src={character.image}
-            alt={character.name}
-            className="sm:w-24 sm:h-24 md:w-28 md:h-28 object-contain my-auto"
-            whileHover={{ scale: 1.05 }} // Slightly enlarge on hover
-          />
-          <motion.h3
-            className="mt-2 text-center capitalize font-semibold text-base sm:text-lg md:text-xl"
-            style={{ transform: "translateZ(10px)" }}
-          >
-            {character.name}
-          </motion.h3>
-        </motion.div>
-      </motion.div>
-    </div>
+    <Card3D
+      onClick={() => onClick(character.id)}
+      topSectionBackground={getTypeBackground()}
+      topSectionContent={topSectionContent}
+      bottomSectionContent={bottomSectionContent}
+    />
   );
 }
