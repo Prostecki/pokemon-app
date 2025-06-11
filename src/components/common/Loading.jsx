@@ -18,7 +18,7 @@ export default function Loading() {
 
   return (
     <div className="flex flex-col items-center space-y-4">
-      <div className="pokemon-font text-4xl mb-4">Pokemon App</div>
+      <div className="pokemon-font text-7xl mb-4">Pokemon App</div>
       <img
         src="/images/pokeball.png"
         alt="Pokeball"

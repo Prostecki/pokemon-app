@@ -179,8 +179,10 @@ body,
    ======================================== */
 .pokemon-font {
   font-family: "Pokemon";
-  font-weight: bold;
-  font-size: 3.5rem;
+  letter-spacing: 3px;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+  /* font-weight: bold; */
+  /* font-size: 3.5rem; */
   color: #2a75bb; /* Классический синий Pokémon */
 }
 

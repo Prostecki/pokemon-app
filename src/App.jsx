@@ -8,6 +8,7 @@ import PokemonDetails from "./components/KnowledgeBase/details/PokemonDetails";
 import { useState, useEffect } from "react";
 import { useSessionStorage } from "./hooks/useSessionStorage";
 import "./index.css";
+import "animate.css";
 import { motion, AnimatePresence } from "framer-motion";
 
 function App() {

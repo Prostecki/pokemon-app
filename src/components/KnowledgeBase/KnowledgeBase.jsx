@@ -25,27 +25,6 @@ export default function KnowledgeBase({ onBackToMenu }) {
     showDetails,
   } = usePokemon();
 
-  // Load a page of pokemons (wrapper over API hook)
-  const handleLoadPage = useCallback(
-    async (page) => {
-      if (loading) return;
-
-      const newPokemons = await loadPokemonPage(page, ITEMS_PER_PAGE);
-
-      // Add only new pokemons to the list
-      setAllPokemons((prevPokemons) => {
-        const existingIds = new Set(prevPokemons.map((p) => p.id));
-        const uniqueNewPokemons = newPokemons.filter(
-          (p) => !existingIds.has(p.id)
-        );
-        return [...prevPokemons, ...uniqueNewPokemons];
-      });
-
-      setCurrentPage(page + 1);
-    },
-    [ITEMS_PER_PAGE, loading, loadPokemonPage]
-  );
-
   // Load next page (for "Load more" button)
   const loadMore = useCallback(async () => {
     if (loading || searchQuery) {

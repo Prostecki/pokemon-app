@@ -6,6 +6,7 @@ import PokemonCard from "./PokemonCard";
 import { ShinyButton } from "@/components/magicui/shiny-button";
 import { AnimatePresence, motion } from "framer-motion";
 import UiverseInput from "./UiverseInput";
+// import "animate.css";
 
 export default function PokemonList({ searchQuery, onSearch }) {
   const navigate = useNavigate();
@@ -32,11 +33,14 @@ export default function PokemonList({ searchQuery, onSearch }) {
 
   return (
     <div className="p-10 pokemon-list-bg flex flex-col items-center min-h-screen overflow-x-hidden">
-      <div className="flex w-1/2 justify-between items-center mb-4">
-        <h1 id="top" className="text-3xl font-bold">
+      <div className="flex w-full justify-between items-center mb-4">
+        <ShinyButton onClick={() => navigate("/")}>Back to menu</ShinyButton>
+        <h1
+          id="top"
+          className="text-7xl w-4/6 font-medium pokemon-font animate__animated animate__lightSpeedInLeft"
+        >
           Choose your Pokemon!
         </h1>
-        <ShinyButton onClick={() => navigate("/")}>Back to menu</ShinyButton>
       </div>
 
       {/* <SearchBar searchQuery={searchQuery} onSearch={onSearch} /> */}
