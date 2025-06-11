@@ -25,10 +25,11 @@ export function Card3D({
           scale: 1.05,
           boxShadow: "0 10px 30px 0 rgba(80, 80, 200, 0.3)",
           zIndex: 10,
+          filter: "drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2))",
         }}
         whileTap={{ scale: 0.98 }}
         onClick={onClick}
-        className="card"
+        className="card bg-gradient-to-r from-slate-500/80 to-gray-700/80 cursor-pointer"
       >
         <motion.div
           className="top-section"

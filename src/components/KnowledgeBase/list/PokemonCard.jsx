@@ -51,14 +51,14 @@ export default function PokemonCard({ character, onClick }) {
     >
       {/* Type badge in top-left corner */}
       <div
-        className="absolute top-[-1rem] left-[-1rem] px-2 py-1 rounded-md text-white text-xs font-bold uppercase shadow-md"
+        className="absolute top-[-1.8rem] left-[-0.6rem] px-2 py-1 rounded-tl-xl rounded-br-xl text-white text-xs font-bold uppercase shadow-md"
         style={{
           backgroundColor: getTypeColor(mainType),
           transform: "translateZ(10px)",
           zIndex: 10,
         }}
       >
-        {mainType}
+        <span>{mainType}</span>
       </div>
 
       <motion.img
@@ -90,10 +90,6 @@ export default function PokemonCard({ character, onClick }) {
           <span className="big-text">{character.id || "???"}</span>
           <span className="regular-text">ID</span>
         </div>
-        {/* <div className="item">
-          <span className="big-text">{character.generation || "???"}</span>
-          <span className="regular-text">Gen</span>
-        </div> */}
         <div className="item">
           <span className="big-text">{character.baseExp || "???"}</span>
           <span className="regular-text">Exp</span>

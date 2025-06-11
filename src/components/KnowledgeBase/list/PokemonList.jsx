@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from "react";
 import PokemonCard from "./PokemonCard";
 import { ShinyButton } from "@/components/magicui/shiny-button";
 import { AnimatePresence, motion } from "framer-motion";
+import UiverseInput from "./UiverseInput";
 
 export default function PokemonList({ searchQuery, onSearch }) {
   const navigate = useNavigate();
@@ -30,15 +31,16 @@ export default function PokemonList({ searchQuery, onSearch }) {
   };
 
   return (
-    <div className="p-4 bg-gray-100 min-h-screen overflow-x-hidden">
-      <div className="flex justify-between items-center mb-4">
+    <div className="p-10 pokemon-list-bg flex flex-col items-center min-h-screen overflow-x-hidden">
+      <div className="flex w-1/2 justify-between items-center mb-4">
         <h1 id="top" className="text-3xl font-bold">
           Choose your Pokemon!
         </h1>
         <ShinyButton onClick={() => navigate("/")}>Back to menu</ShinyButton>
       </div>
 
-      <SearchBar searchQuery={searchQuery} onSearch={onSearch} />
+      {/* <SearchBar searchQuery={searchQuery} onSearch={onSearch} /> */}
+      <UiverseInput searchQuery={searchQuery} onSearch={onSearch} />
 
       {characters.length === 0 ? (
         <div className="text-center p-10 bg-white rounded-lg shadow">
@@ -49,7 +51,7 @@ export default function PokemonList({ searchQuery, onSearch }) {
         </div>
       ) : (
         <>
-          <div className="flex flex-wrap gap-1 justify-center">
+          <div className="mt-5 flex flex-wrap gap-1 justify-center">
             <AnimatePresence>
               {characters.map((character, index) => (
                 <motion.div
