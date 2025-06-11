@@ -7,13 +7,13 @@ export function useCard3DEffect(rotationRange = 40.5) {
   const y = useMotionValue(0);
   const halfRotationRange = rotationRange / 2;
 
-  // Пружинные настройки для более плавной анимации
+  // Spring settings for smoother animation
   const xSpring = useSpring(x, { stiffness: 400, damping: 25 });
   const ySpring = useSpring(y, { stiffness: 400, damping: 25 });
 
   const transform = useMotionTemplate`rotateX(${xSpring}deg) rotateY(${ySpring}deg)`;
 
-  // Обработчик движения мыши для 3D-эффекта
+  // Mouse move handler for 3D effect
   const handleMouseMove = (e) => {
     if (!ref.current) return;
     const rect = ref.current.getBoundingClientRect();
@@ -31,7 +31,7 @@ export function useCard3DEffect(rotationRange = 40.5) {
     y.set(rY);
   };
 
-  // Сброс наклона при уходе мыши
+  // Reset tilt when mouse leaves
   const handleMouseLeave = () => {
     x.set(0);
     y.set(0);

@@ -6,14 +6,14 @@ export default function ChosenPokemon({ pokemon }) {
   const [currentImage, setCurrentImage] = useState(pokemon.image);
   const [previousPokemon, setPreviousPokemon] = useState(null);
   const [direction, setDirection] = useState(0); // -1: left, 1: right, 0: initial
-  const [animationKey, setAnimationKey] = useState(pokemon.id); // Отдельный ключ для анимации
+  const [animationKey, setAnimationKey] = useState(pokemon.id); // Separate key for animation
 
-  // Отслеживаем изменение покемона для анимации
+  // Monitor changes in pokemon for animation
   useEffect(() => {
     if (previousPokemon && previousPokemon.id !== pokemon.id) {
-      // Определяем направление анимации по ID покемона
+      // Determine animation direction based on the pokemon ID
       setDirection(pokemon.id > previousPokemon.id ? 1 : -1);
-      // Обновляем ключ анимации при смене покемона
+      // Update the animation key when the pokemon changes
       setAnimationKey(pokemon.id);
     }
 
@@ -21,7 +21,7 @@ export default function ChosenPokemon({ pokemon }) {
     setCurrentImage(pokemon.image);
   }, [pokemon]);
 
-  // Обработчик для shiny версии - без обновления ключа анимации
+  // Handler for shiny version - without updating the animation key
   const handleVersionChange = (newImage) => {
     setCurrentImage(newImage);
   };
@@ -47,11 +47,11 @@ export default function ChosenPokemon({ pokemon }) {
         </div>
       </div>
 
-      {/* Анимированный контейнер для изображения */}
+      {/* Animated container for the pokemon image */}
       <div className="relative w-full h-64 overflow-hidden">
         <AnimatePresence initial={false} custom={direction}>
           <motion.div
-            key={animationKey} // Используем animationKey вместо currentImage
+            key={animationKey} // Using animationKey instead of currentImage
             custom={direction}
             initial={{
               opacity: 0,
@@ -73,7 +73,7 @@ export default function ChosenPokemon({ pokemon }) {
             className="absolute inset-0 flex items-center justify-center"
           >
             <img
-              src={currentImage} // Текущее изображение (обычное или shiny)
+              src={currentImage} // Current image (normal or shiny)
               alt={pokemon.name}
               className="w-auto h-full max-h-64 object-contain"
             />
@@ -110,7 +110,7 @@ export default function ChosenPokemon({ pokemon }) {
             >
               <img
                 src={pokemon.shinyImage}
-                alt={pokemon.name + " shiny"}
+                alt={`${pokemon.name} shiny`}
                 className="w-20 h-20 object-contain"
               />
             </button>

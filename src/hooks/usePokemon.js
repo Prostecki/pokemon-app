@@ -35,6 +35,7 @@ export function usePokemon(itemsPerPage = 40) {
                   ?.animated?.front_default || null,
               url: pokemon.url,
               types: details.types.map((t) => t.type.name),
+              baseExp: details.base_experience,
             };
           })
         );
@@ -80,7 +81,6 @@ export function usePokemon(itemsPerPage = 40) {
           id,
           name: pokemon.name,
           image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
-          animatedImage: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/${id}.gif`,
         };
       });
     } catch (err) {

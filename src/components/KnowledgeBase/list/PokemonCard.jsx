@@ -4,30 +4,38 @@ import { getGradientFromColor } from "../../../utils/adjustColor";
 import { Card3D } from "../../common/Card3D";
 
 export default function PokemonCard({ character, onClick }) {
-  // Определяем основной тип покемона и создаем градиент
+  // Determine the main pokemon type and create a gradient background
   const getTypeBackground = () => {
-    // Упрощенная проверка на наличие типа
-    let mainType = "normal"; // значение по умолчанию
+    // Simplified check for the existence of a type
+    let mainType = "normal"; // default value
 
-    // Проверяем есть ли массив типов
+    // Check if there is an array of types
     if (
       character.types &&
       Array.isArray(character.types) &&
       character.types.length > 0
     ) {
-      mainType = character.types[0]; // берем первый тип из массива
+      mainType = character.types[0]; // use the first type from the array
     }
-    // Если есть просто строка типа
+    // If there's just a type string
     else if (character.type) {
       mainType = character.type;
     }
 
-    // Получаем цвет и создаем градиент
+    // Get the type color and create a gradient using it
     const typeColor = getTypeColor(mainType);
     return getGradientFromColor(typeColor, 30);
   };
 
-  // Содержимое верхней части карточки
+  // Get the main type for both background and badge
+  const mainType =
+    character.types &&
+    Array.isArray(character.types) &&
+    character.types.length > 0
+      ? character.types[0]
+      : character.type || "normal";
+
+  // Content for the top section of the card
   const topSectionContent = character.image && (
     <motion.div
       style={{
@@ -41,6 +49,18 @@ export default function PokemonCard({ character, onClick }) {
         height: "100%",
       }}
     >
+      {/* Type badge in top-left corner */}
+      <div
+        className="absolute top-[-1rem] left-[-1rem] px-2 py-1 rounded-md text-white text-xs font-bold uppercase shadow-md"
+        style={{
+          backgroundColor: getTypeColor(mainType),
+          transform: "translateZ(10px)",
+          zIndex: 10,
+        }}
+      >
+        {mainType}
+      </div>
+
       <motion.img
         src={character.image}
         alt={character.name}
@@ -51,12 +71,11 @@ export default function PokemonCard({ character, onClick }) {
           objectFit: "contain",
           transform: "translateZ(5px)",
         }}
-        whileHover={{ scale: 1.05 }}
       />
     </motion.div>
   );
 
-  // Содержимое нижней части карточки
+  // Content for the bottom section of the card
   const bottomSectionContent = (
     <>
       <motion.span
@@ -71,19 +90,17 @@ export default function PokemonCard({ character, onClick }) {
           <span className="big-text">{character.id || "???"}</span>
           <span className="regular-text">ID</span>
         </div>
+        {/* <div className="item">
+          <span className="big-text">{character.generation || "???"}</span>
+          <span className="regular-text">Gen</span>
+        </div> */}
         <div className="item">
-          <span className="big-text">
-            {character.types
-              ? Array.isArray(character.types)
-                ? character.types.join("/")
-                : character.types
-              : character.type || "???"}
-          </span>
-          <span className="regular-text">Type</span>
+          <span className="big-text">{character.baseExp || "???"}</span>
+          <span className="regular-text">Exp</span>
         </div>
         <div className="item">
-          <span className="big-text">{character.level || "???"}</span>
-          <span className="regular-text">Level</span>
+          <span className="big-text">{character.types?.length || "1"}</span>
+          <span className="regular-text">Types</span>
         </div>
       </div>
     </>

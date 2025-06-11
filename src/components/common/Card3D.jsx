@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useCard3DEffect } from "../../hooks/useCard3DEffect";
+import { useCard3DEffect } from "@/hooks/useCard3DEffect";
 
 export function Card3D({
   onClick,

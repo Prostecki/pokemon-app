@@ -29,20 +29,6 @@ export default function PokemonList({ searchQuery, onSearch }) {
     }, 100);
   };
 
-  // Scroll to new Pokemon after loading
-  // useEffect(() => {
-  //   if (
-  //     !isLoading &&
-  //     characters.length > prevCharactersCount &&
-  //     newPokemonRef.current
-  //   ) {
-  //     newPokemonRef.current.scrollIntoView({
-  //       behavior: "smooth",
-  //       block: "start",
-  //     });
-  //   }
-  // }, [characters.length, isLoading, prevCharactersCount]);
-
   return (
     <div className="p-4 bg-gray-100 min-h-screen overflow-x-hidden">
       <div className="flex justify-between items-center mb-4">
