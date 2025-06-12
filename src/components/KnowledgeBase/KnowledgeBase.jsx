@@ -14,6 +14,7 @@ export default function KnowledgeBase({ onBackToMenu }) {
   const [allPokemons, setAllPokemons] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false); // New loading state
+  const [selectedTypes, setSelectedTypes] = useState([]);
   const searchTimeoutRef = useRef(null);
 
   // Use unified hook for all pokemon logic
@@ -113,8 +114,25 @@ export default function KnowledgeBase({ onBackToMenu }) {
     [fetchDetails]
   );
 
-  // Determine which pokemons to display (search or all)
-  const displayedPokemons = searchQuery ? searchResults : allPokemons;
+  // Handle type filter changes
+  const handleTypeFilterChange = useCallback((types) => {
+    setSelectedTypes(types);
+  }, []);
+
+  // Filter pokemons by type and search query
+  const filteredPokemons = useMemo(() => {
+    let filtered = searchQuery ? searchResults : allPokemons;
+
+    if (selectedTypes.length > 0) {
+      filtered = filtered.filter(
+        (pokemon) =>
+          pokemon.types &&
+          pokemon.types.some((type) => selectedTypes.includes(type))
+      );
+    }
+
+    return filtered;
+  }, [searchQuery, searchResults, allPokemons, selectedTypes]);
 
   return (
     <div className="">
@@ -131,7 +149,7 @@ export default function KnowledgeBase({ onBackToMenu }) {
         />
       ) : (
         <PaginationProvider
-          characters={displayedPokemons}
+          characters={filteredPokemons}
           currentPage={currentPage}
           loadMorePokemon={loadMore}
           onSelect={handleSelectPokemon}
@@ -141,6 +159,8 @@ export default function KnowledgeBase({ onBackToMenu }) {
               onBackToMenu={onBackToMenu}
               searchQuery={searchQuery}
               onSearch={handleSearch}
+              selectedTypes={selectedTypes}
+              onTypeFilterChange={handleTypeFilterChange}
             />
             {loading && (
               <div className="flex justify-center my-4">

@@ -7,24 +7,30 @@ import { AnimatePresence, motion } from "framer-motion";
 import UiverseInput from "./UiverseInput";
 import { FixedSizeGrid } from "react-window";
 import { SparklesText } from "@/components/magicui/sparkles-text";
+import TypeFilter from "../TypeFilter";
 
-export default function PokemonList({ searchQuery, onSearch }) {
+export default function PokemonList({
+  searchQuery,
+  onSearch,
+  selectedTypes = [],
+  onTypeFilterChange,
+}) {
   const navigate = useNavigate();
   const { characters, loadMorePokemon, onSelect } = usePaginationContext();
   const [isLoading, setIsLoading] = useState(false);
   const [prevCharactersCount, setPrevCharactersCount] = useState(0);
   const newPokemonRef = useRef(null);
-  // Добавляем состояние для ширины окна
+  // State for window width
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1200
   );
 
-  // Размеры и параметры для виртуализации
+  // Card and grid sizing constants
   const CARD_WIDTH = 240;
   const CARD_HEIGHT = 350;
   const GAP = 8;
 
-  // Обработчик изменения размера окна
+  // Handle window resize to update grid columns
   useEffect(() => {
     function handleResize() {
       setWindowWidth(window.innerWidth);
@@ -34,23 +40,25 @@ export default function PokemonList({ searchQuery, onSearch }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Теперь columnCount зависит от windowWidth и будет пересчитываться при изменении размера окна
+  // Calculate column count based on window width
   const columnCount = useMemo(() => {
     return Math.max(1, Math.floor((windowWidth - 100) / (CARD_WIDTH + GAP)));
   }, [windowWidth, CARD_WIDTH, GAP]);
 
-  // Динамический расчёт высоты грида на основе количества элементов
+  // Calculate grid height based on number of rows
   const gridHeight = useMemo(() => {
     const rows = Math.ceil(characters.length / columnCount);
-    return rows * CARD_HEIGHT; // Высота равна количеству строк * высоту карточки
+    return rows * CARD_HEIGHT;
   }, [characters.length, columnCount, CARD_HEIGHT]);
 
+  // Handle click on a pokemon card
   const handlePokemonClick = (id) => {
     if (onSelect) {
       onSelect(id);
     }
   };
 
+  // Handle "Load more" button click
   const handleLoadMore = () => {
     setIsLoading(true);
     setPrevCharactersCount(characters.length);
@@ -61,7 +69,7 @@ export default function PokemonList({ searchQuery, onSearch }) {
     }, 100);
   };
 
-  // Функция рендеринга ячейки для FixedSizeGrid
+  // Render cell for FixedSizeGrid
   const Cell = ({ columnIndex, rowIndex, style }) => {
     const index = rowIndex * columnCount + columnIndex;
     if (index >= characters.length) return null;
@@ -96,18 +104,18 @@ export default function PokemonList({ searchQuery, onSearch }) {
     <div className="p-10 pokemon-list-bg flex flex-col items-center min-h-screen overflow-x-hidden">
       <div className="flex w-full justify-between items-center mb-4">
         <ShinyButton onClick={() => navigate("/")}>Back to menu</ShinyButton>
-        {/* <h1
-          id="top"
-          className="text-7xl w-4/6 font-medium pokemon-font animate__animated animate__lightSpeedInLeft"
-        >
-          Choose your Pokemon!
-        </h1> */}
         <SparklesText className="text-7xl w-4/6 font-light pokemon-font animate__animated animate__backInDown">
           Choose your Pokemon!
         </SparklesText>
       </div>
 
       <UiverseInput searchQuery={searchQuery} onSearch={onSearch} />
+
+      {/* Add Type Filter component here */}
+      <TypeFilter
+        activeTypes={selectedTypes}
+        onFilterChange={onTypeFilterChange}
+      />
 
       {characters.length === 0 ? (
         <div className="text-center p-10 bg-white rounded-lg shadow">
@@ -120,10 +128,10 @@ export default function PokemonList({ searchQuery, onSearch }) {
         <>
           <div className="mt-5 w-full flex justify-center">
             <FixedSizeGrid
-              style={{ overflow: "hidden" }} // Убираем скролл
+              style={{ overflow: "hidden" }}
               columnCount={columnCount}
               columnWidth={CARD_WIDTH}
-              height={gridHeight} // Динамическая высота
+              height={gridHeight}
               rowCount={Math.ceil(characters.length / columnCount)}
               rowHeight={CARD_HEIGHT}
               width={Math.min(
@@ -135,6 +143,7 @@ export default function PokemonList({ searchQuery, onSearch }) {
             </FixedSizeGrid>
           </div>
 
+          {/* "Load more" button for pagination */}
           {!searchQuery && characters.length > 0 && (
             <div className="mt-8 flex justify-center">
               <button
@@ -148,6 +157,7 @@ export default function PokemonList({ searchQuery, onSearch }) {
           )}
         </>
       )}
+      {/* Scroll to top button */}
       <ShinyButton
         onClick={() => {
           window.scrollTo({ top: 0, behavior: "smooth" });
