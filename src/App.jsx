@@ -1,15 +1,22 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Loading from "./components/common/Loading";
-import StartMenu from "./components/StartMenu/StartMenu";
-import StartGame from "./components/StartGame/StartGame";
-import About from "./components/About/About";
-import KnowledgeBase from "./components/KnowledgeBase/KnowledgeBase";
-import PokemonDetails from "./components/KnowledgeBase/details/PokemonDetails";
-import { useState, useEffect } from "react";
+import { lazy, Suspense, useState, useEffect } from "react";
 import { useSessionStorage } from "./hooks/useSessionStorage";
 import "./index.css";
 import "animate.css";
 import { motion, AnimatePresence } from "framer-motion";
+import DetailLoader from "./components/common/DetailLoader";
+
+// Ленивая загрузка компонентов
+const Loading = lazy(() => import("./components/common/Loading"));
+const StartMenu = lazy(() => import("./components/StartMenu/StartMenu"));
+const StartGame = lazy(() => import("./components/StartGame/StartGame"));
+const About = lazy(() => import("./components/About/About"));
+const KnowledgeBase = lazy(() =>
+  import("./components/KnowledgeBase/KnowledgeBase")
+);
+const PokemonDetails = lazy(() =>
+  import("./components/KnowledgeBase/details/PokemonDetails")
+);
 
 function App() {
   const [gameStage, setGameStage] = useState("startMenu");
@@ -56,7 +63,7 @@ export default function RouterApp() {
         {isLoading && !hasSeenLoading ? (
           <motion.div
             key="loading-screen"
-            className="flex items-center justify-center h-screen bg-gray-100 fixed inset-0 z-50"
+            className="flex items-center justify-center h-screen bg-gray-100 inset-0 z-50"
             initial={{ opacity: 1 }}
             exit={{
               opacity: 0,
@@ -70,7 +77,9 @@ export default function RouterApp() {
               transition: { duration: 0.3 },
             }}
           >
-            <Loading />
+            <Suspense>
+              <Loading />
+            </Suspense>
           </motion.div>
         ) : (
           <motion.div
@@ -79,13 +88,21 @@ export default function RouterApp() {
             animate={{ opacity: 1 }}
           >
             <Router>
-              <Routes>
-                <Route path="/" element={<App />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/base" element={<KnowledgeBase />} />
-                <Route path="/startgame" element={<StartGame />} />
-                <Route path="/base/:id" element={<PokemonDetails />} />
-              </Routes>
+              <Suspense
+                fallback={
+                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-50/10 bg-opacity-50">
+                    <DetailLoader />
+                  </div>
+                }
+              >
+                <Routes>
+                  <Route path="/" element={<App />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/base" element={<KnowledgeBase />} />
+                  <Route path="/startgame" element={<StartGame />} />
+                  <Route path="/base/:id" element={<PokemonDetails />} />
+                </Routes>
+              </Suspense>
             </Router>
           </motion.div>
         )}

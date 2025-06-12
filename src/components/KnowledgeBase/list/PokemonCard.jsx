@@ -64,6 +64,7 @@ export default function PokemonCard({ character, onClick }) {
       <motion.img
         src={character.image}
         alt={character.name}
+        loading="lazy"
         style={{
           width: "150px",
           height: "150px",
