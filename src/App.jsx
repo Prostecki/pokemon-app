@@ -18,6 +18,8 @@ const PokemonDetails = lazy(() =>
   import("./components/KnowledgeBase/details/PokemonDetails")
 );
 
+const NotFoundPage = lazy(() => import("./components/common/NotFoundPage"));
+
 function App() {
   const [gameStage, setGameStage] = useState("startMenu");
 
@@ -100,7 +102,7 @@ export default function RouterApp() {
                   <Route path="/about" element={<About />} />
                   <Route path="/base" element={<KnowledgeBase />} />
                   <Route path="/startgame" element={<StartGame />} />
-                  <Route path="/profile" element={<div>Profile</div>} />
+                  <Route path="/profile" element={<NotFoundPage />} />
                   <Route path="/base/:id" element={<PokemonDetails />} />
                 </Routes>
               </Suspense>
