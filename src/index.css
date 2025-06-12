@@ -150,7 +150,7 @@ body,
 .pokemon-bg {
   position: relative;
   min-height: 100vh;
-  background-image: url("public/images/pokemon-bg.jpg");
+  background-image: url("/images/pokemon-bg.jpg");
   background-size: cover;
   background-position: center;
   overflow: hidden;
