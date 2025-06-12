@@ -5,7 +5,6 @@ export default function Loading() {
   const [value, setValue] = useState(0);
 
   useEffect(() => {
-    // Update to reach 100% within the 2000ms timeout in App.jsx
     const interval = setInterval(() => {
       setValue((prevValue) => {
         const newValue = prevValue + 5;

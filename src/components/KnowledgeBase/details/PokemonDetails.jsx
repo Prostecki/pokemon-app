@@ -1,3 +1,4 @@
+import { useState } from "react";
 import PokemonStatsChart from "./PokemonStatsChart";
 import ChosenPokemon from "./ChosenPokemon";
 import PokemonDetailInfo from "./PokemonDetailInfo";
@@ -11,7 +12,17 @@ export default function PokemonDetails({
   onBack,
   onSelectEvolution,
 }) {
-  if (loading) {
+  const [isReturning, setIsReturning] = useState(false);
+
+  const handleBack = () => {
+    setIsReturning(true);
+    setTimeout(() => {
+      onBack();
+      setIsReturning(false);
+    }, 300);
+  };
+
+  if (loading || isReturning) {
     return <PokemonDetailsLoading />;
   }
 

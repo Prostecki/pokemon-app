@@ -1,8 +1,10 @@
 import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import PokemonList from "./list/PokemonList";
 import PokemonDetails from "./details/PokemonDetails";
+import Loading from "../common/Loading";
 import { usePokemon } from "../../hooks/usePokemon"; // Unified hook import
 import { PaginationProvider } from "../../contexts/PaginationContext";
+import DetailLoader from "../common/DetailLoader";
 
 export default function KnowledgeBase({ onBackToMenu }) {
   // Constants and state
@@ -11,6 +13,7 @@ export default function KnowledgeBase({ onBackToMenu }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [allPokemons, setAllPokemons] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
+  const [isLoadingDetails, setIsLoadingDetails] = useState(false); // New loading state
   const searchTimeoutRef = useRef(null);
 
   // Use unified hook for all pokemon logic
@@ -101,7 +104,11 @@ export default function KnowledgeBase({ onBackToMenu }) {
   // Select pokemon to show details
   const handleSelectPokemon = useCallback(
     (id) => {
-      fetchDetails(id);
+      setIsLoadingDetails(true); // Start loading immediately on click
+
+      fetchDetails(id).finally(() => {
+        setIsLoadingDetails(false); // End loading when fetch completes
+      });
     },
     [fetchDetails]
   );
@@ -111,7 +118,11 @@ export default function KnowledgeBase({ onBackToMenu }) {
 
   return (
     <div className="">
-      {showDetails ? (
+      {isLoadingDetails ? (
+        <div className="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <DetailLoader />
+        </div>
+      ) : showDetails ? (
         <PokemonDetails
           pokemon={pokemonDetails}
           evolutions={evolutions}
