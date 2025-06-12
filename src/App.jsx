@@ -100,6 +100,7 @@ export default function RouterApp() {
                   <Route path="/about" element={<About />} />
                   <Route path="/base" element={<KnowledgeBase />} />
                   <Route path="/startgame" element={<StartGame />} />
+                  <Route path="/profile" element={<div>Profile</div>} />
                   <Route path="/base/:id" element={<PokemonDetails />} />
                 </Routes>
               </Suspense>

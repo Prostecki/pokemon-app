@@ -28,7 +28,7 @@ export function Card3D({
         }}
         whileTap={{ scale: 0.98 }}
         onClick={onClick}
-        className="card bg-gradient-to-r from-slate-500/80 to-gray-700/80 cursor-pointer"
+        className="card border-2 border-black/70 bg-gradient-to-r from-slate-500/80 to-gray-700/80 cursor-pointer"
       >
         <motion.div
           className="top-section"

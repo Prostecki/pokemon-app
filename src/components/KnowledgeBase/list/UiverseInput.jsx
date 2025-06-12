@@ -56,7 +56,7 @@ export default function UiverseInput({ searchQuery, onSearch }) {
         value={localQuery}
         onChange={handleChange}
         className="input__search"
-        placeholder="Search Pokémon..."
+        placeholder="For example: Pikachu, Bulbasaur, etc."
       />
     </div>
   );

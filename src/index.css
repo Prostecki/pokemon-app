@@ -207,7 +207,7 @@ body,
 /* --- Cards --- */
 .card {
   width: 200px;
-  border-radius: 20px;
+  border-radius: 12px;
   /* background: #1b233d; */
   /* background: rgb(255, 193, 142); */
   padding: 5px;
@@ -524,7 +524,7 @@ body,
   outline: none;
   border: 3px solid #000;
   padding: 15px;
-  font-size: 18px;
+  font-size: 0.8rem;
   background: #fff;
   color: #000;
   transform: translateZ(10px);
@@ -549,12 +549,13 @@ body,
 }
 
 .input__container::before {
-  content: "Pokémon Base";
+  content: "Enter Pokémon Name...";
   position: absolute;
   top: -15px;
   left: 20px;
   background: #e9b50b;
   color: #000;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
   font-weight: bold;
   padding: 5px 10px;
   font-size: 14px;
