@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import PokemonList from "./list/PokemonList";
 import PokemonDetails from "./details/PokemonDetails";
 import Loading from "../common/Loading";
+import Header from "@/components/layout/Header";
 import { usePokemon } from "../../hooks/usePokemon"; // Unified hook import
 import { PaginationProvider } from "../../contexts/PaginationContext";
 import DetailLoader from "../common/DetailLoader";
@@ -155,6 +156,7 @@ export default function KnowledgeBase({ onBackToMenu }) {
           onSelect={handleSelectPokemon}
         >
           <>
+            <Header searchQuery={searchQuery} onSearch={handleSearch} />
             <PokemonList
               onBackToMenu={onBackToMenu}
               searchQuery={searchQuery}

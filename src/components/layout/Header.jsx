@@ -1,24 +1,32 @@
-export default function Header({ fixed = false }) {
+import MenuButton from "../common/MenuButton";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import PokeInput from "../common/PokeInput";
+
+export default function Header({ searchQuery, onSearch }) {
+  const [isTransparent, setIsTransparent] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsTransparent(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const navigate = useNavigate();
+
   return (
     <header
-      className={`${
-        fixed ? "fixed" : "relative"
-      } w-full bg-blue-600 text-white p-4 flex items-center justify-between shadow-md`}
+      className={`fixed z-22 w-full ${
+        isTransparent ? "bg-white/30" : "bg-white/95"
+      } flex items-center justify-center gap-10 p-4 shadow-md duration-300 transition-colors`}
     >
-      <h1 className="header-title">Pokémon Knowledge Base</h1>
-      <nav className="header-nav">
-        <ul>
-          <li>
-            <a href="/">Home</a>
-          </li>
-          <li>
-            <a href="/about">About</a>
-          </li>
-          <li>
-            <a href="/knowledge-base">Knowledge Base</a>
-          </li>
-        </ul>
-      </nav>
+      <h1 className="text-4xl w-1/3 drop-shadow-2xl text-start font-bold animate__animated animate__backInDown">
+        Choose your Pokemon!
+      </h1>
+      <PokeInput searchQuery={searchQuery} onSearch={onSearch} />
+      <MenuButton onClick={() => navigate("/")}>Back to Menu</MenuButton>
     </header>
   );
 }

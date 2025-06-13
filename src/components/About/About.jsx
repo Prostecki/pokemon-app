@@ -1,4 +1,4 @@
-import MenuButton from "../StartMenu/MenuButton";
+import MenuButton from "../common/MenuButton";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 

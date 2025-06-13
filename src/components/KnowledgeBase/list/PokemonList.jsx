@@ -4,9 +4,9 @@ import { useState, useRef, useEffect } from "react";
 import PokemonCard from "./PokemonCard";
 import { ShinyButton } from "@/components/magicui/shiny-button";
 import { motion } from "framer-motion";
-import UiverseInput from "./UiverseInput";
-import { SparklesText } from "@/components/magicui/sparkles-text";
-import TypeFilter from "../TypeFilter";
+import PokeInput from "../../common/PokeInput";
+import MenuButton from "../../common/MenuButton";
+import TypeFilter from "../../common/TypeFilter";
 
 export default function PokemonList({
   searchQuery,
@@ -18,6 +18,7 @@ export default function PokemonList({
   const [isLoading, setIsLoading] = useState(false);
   const [prevCharactersCount, setPrevCharactersCount] = useState(0);
   const newPokemonRef = useRef(null);
+  const navigate = useNavigate();
 
   // Handle click on a pokemon card
   const handlePokemonClick = (id) => {
@@ -38,7 +39,7 @@ export default function PokemonList({
   };
 
   return (
-    <div className="pokemon-list-bg min-h-screen overflow-x-hidden flex">
+    <div className="pokemon-list-bg min-h-screen pt-14 overflow-x-hidden flex">
       {/* Fixed left sidebar */}
       <div
         className="fixed top-0 left-0 h-full overflow-y-auto bg-gray-50/80 backdrop-blur-sm z-20"
@@ -48,11 +49,6 @@ export default function PokemonList({
         }}
       >
         <div className="sticky top-4 p-4">
-          <SparklesText className="text-3xl w-full  text-start font-light pokemon-font animate__animated animate__backInDown">
-            Choose your Pokemon!
-          </SparklesText>
-          <UiverseInput searchQuery={searchQuery} onSearch={onSearch} />
-
           <div className="mt-6">
             <TypeFilter
               activeTypes={selectedTypes}
