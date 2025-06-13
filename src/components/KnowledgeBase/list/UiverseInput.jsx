@@ -20,7 +20,7 @@ export default function UiverseInput({ searchQuery, onSearch }) {
   };
 
   return (
-    <div className="input__container my-12 md:w-[30rem]">
+    <div className="input__container my-12 md:w-[25rem]">
       <div className="shadow__input" />
       <button
         className="input__button__shadow"
@@ -56,7 +56,7 @@ export default function UiverseInput({ searchQuery, onSearch }) {
         value={localQuery}
         onChange={handleChange}
         className="input__search"
-        placeholder="For example: Pikachu, Bulbasaur, etc."
+        placeholder="Pikachu, Bulbasaur, etc."
       />
     </div>
   );

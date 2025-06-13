@@ -135,7 +135,7 @@ export default function KnowledgeBase({ onBackToMenu }) {
   }, [searchQuery, searchResults, allPokemons, selectedTypes]);
 
   return (
-    <div className="">
+    <>
       {isLoadingDetails ? (
         <div className="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center">
           <DetailLoader />
@@ -170,6 +170,6 @@ export default function KnowledgeBase({ onBackToMenu }) {
           </>
         </PaginationProvider>
       )}
-    </div>
+    </>
   );
 }
