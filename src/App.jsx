@@ -5,17 +5,16 @@ import "./index.css";
 import "animate.css";
 import { motion, AnimatePresence } from "framer-motion";
 import DetailLoader from "./components/common/DetailLoader";
+import { PokemonBaseProvider } from "./contexts/PokemonBaseContext";
 
-// Ленивая загрузка компонентов
+// Lazy loading of components
 const Loading = lazy(() => import("./components/common/Loading"));
 const StartMenu = lazy(() => import("./components/StartMenu/StartMenu"));
 const StartGame = lazy(() => import("./components/StartGame/StartGame"));
 const About = lazy(() => import("./components/About/About"));
-const KnowledgeBase = lazy(() =>
-  import("./components/KnowledgeBase/KnowledgeBase")
-);
+const PokemonBase = lazy(() => import("./components/PokemonBase/PokemonBase"));
 const PokemonDetails = lazy(() =>
-  import("./components/KnowledgeBase/details/PokemonDetails")
+  import("./components/PokemonBase/details/PokemonDetails")
 );
 
 const NotFoundPage = lazy(() => import("./components/common/NotFoundPage"));
@@ -34,7 +33,7 @@ function App() {
   if (gameStage === "startMenu") {
     return <StartMenu onKnowledgeBase={knowledgeBase} />;
   } else if (gameStage === "knowledgeBase") {
-    return <KnowledgeBase onBackToMenu={goToStartMenu} />;
+    return <PokemonBase onBackToMenu={goToStartMenu} />;
   }
 }
 
@@ -52,7 +51,7 @@ export default function RouterApp() {
       setTimeout(() => {
         setIsLoading(false);
         setHasSeenLoading(true);
-      }, 2000); // Увеличил время для отладки
+      }, 2000); // Increased time for debugging
     } else {
       // Skip loading screen
       setIsLoading(false);
@@ -89,24 +88,26 @@ export default function RouterApp() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <Router>
-              <Suspense
-                fallback={
-                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-50/10 bg-opacity-50">
-                    <DetailLoader />
-                  </div>
-                }
-              >
-                <Routes>
-                  <Route path="/" element={<App />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/base" element={<KnowledgeBase />} />
-                  <Route path="/startgame" element={<StartGame />} />
-                  <Route path="/profile" element={<NotFoundPage />} />
-                  <Route path="/base/:id" element={<PokemonDetails />} />
-                </Routes>
-              </Suspense>
-            </Router>
+            <PokemonBaseProvider>
+              <Router>
+                <Suspense
+                  fallback={
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-50/10 bg-opacity-50">
+                      <DetailLoader />
+                    </div>
+                  }
+                >
+                  <Routes>
+                    <Route path="/" element={<App />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/base" element={<PokemonBase />} />
+                    <Route path="/startgame" element={<StartGame />} />
+                    <Route path="/profile" element={<NotFoundPage />} />
+                    <Route path="/base/:id" element={<PokemonDetails />} />
+                  </Routes>
+                </Suspense>
+              </Router>
+            </PokemonBaseProvider>
           </motion.div>
         )}
       </AnimatePresence>

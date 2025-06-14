@@ -1,20 +1,26 @@
-import { useEffect, useState, useCallback, useMemo, useRef } from "react";
-import PokemonList from "./list/PokemonList";
-import PokemonDetails from "./details/PokemonDetails";
-import Loading from "../common/Loading";
-import Header from "@/components/layout/Header";
-import { usePokemon } from "../../hooks/usePokemon"; // Unified hook import
-import { PaginationProvider } from "../../contexts/PaginationContext";
-import DetailLoader from "../common/DetailLoader";
+import {
+  createContext,
+  useContext,
+  useState,
+  useRef,
+  useCallback,
+  useEffect,
+  useMemo,
+} from "react";
+import { usePokemon } from "../hooks/usePokemon";
 
-export default function KnowledgeBase({ onBackToMenu }) {
-  // Constants and state
+const PokemonBaseContext = createContext();
+
+export function PokemonBaseProvider({ children }) {
+  // Constants
   const ITEMS_PER_PAGE = 40;
+
+  // State
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [allPokemons, setAllPokemons] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
-  const [isLoadingDetails, setIsLoadingDetails] = useState(false); // New loading state
+  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const [selectedTypes, setSelectedTypes] = useState([]);
   const searchTimeoutRef = useRef(null);
 
@@ -35,22 +41,18 @@ export default function KnowledgeBase({ onBackToMenu }) {
     if (loading || searchQuery) {
       return [];
     }
-
     try {
       const newPokemons = await loadPokemonPage(currentPage, ITEMS_PER_PAGE);
-
       if (newPokemons && newPokemons.length > 0) {
         setAllPokemons((prevPokemons) => {
           const existingIds = new Set(prevPokemons.map((p) => p.id));
           const uniqueNewPokemons = newPokemons.filter(
             (p) => !existingIds.has(p.id)
           );
-
           if (uniqueNewPokemons.length > 0) {
             setCurrentPage(currentPage + 1);
             return [...prevPokemons, ...uniqueNewPokemons];
           }
-
           return prevPokemons;
         });
       }
@@ -68,7 +70,7 @@ export default function KnowledgeBase({ onBackToMenu }) {
       setAllPokemons(pokemons || []);
       setCurrentPage(2);
     });
-  }, []); // empty dependency for mount only
+  }, [loadPokemonPage]);
 
   // Search handler with debounce
   const handleSearch = useCallback(
@@ -135,43 +137,44 @@ export default function KnowledgeBase({ onBackToMenu }) {
     return filtered;
   }, [searchQuery, searchResults, allPokemons, selectedTypes]);
 
+  const value = {
+    ITEMS_PER_PAGE,
+    searchQuery,
+    setSearchQuery,
+    currentPage,
+    setCurrentPage,
+    allPokemons,
+    setAllPokemons,
+    searchResults,
+    setSearchResults,
+    isLoadingDetails,
+    setIsLoadingDetails,
+    selectedTypes,
+    setSelectedTypes,
+    loading,
+    pokemonDetails,
+    evolutions,
+    showDetails,
+    loadMore,
+    handleSearch,
+    handleSelectPokemon,
+    handleTypeFilterChange,
+    filteredPokemons,
+    resetDetails,
+  };
+
   return (
-    <>
-      {isLoadingDetails ? (
-        <div className="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center">
-          <DetailLoader />
-        </div>
-      ) : showDetails ? (
-        <PokemonDetails
-          pokemon={pokemonDetails}
-          evolutions={evolutions}
-          onBack={resetDetails}
-          onSelectEvolution={handleSelectPokemon}
-        />
-      ) : (
-        <PaginationProvider
-          characters={filteredPokemons}
-          currentPage={currentPage}
-          loadMorePokemon={loadMore}
-          onSelect={handleSelectPokemon}
-        >
-          <>
-            <Header searchQuery={searchQuery} onSearch={handleSearch} />
-            <PokemonList
-              onBackToMenu={onBackToMenu}
-              searchQuery={searchQuery}
-              onSearch={handleSearch}
-              selectedTypes={selectedTypes}
-              onTypeFilterChange={handleTypeFilterChange}
-            />
-            {loading && (
-              <div className="flex justify-center my-4">
-                <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-              </div>
-            )}
-          </>
-        </PaginationProvider>
-      )}
-    </>
+    <PokemonBaseContext.Provider value={value}>
+      {children}
+    </PokemonBaseContext.Provider>
   );
+}
+
+// Custom hook to use this context
+export function usePokemonBase() {
+  const context = useContext(PokemonBaseContext);
+  if (context === undefined) {
+    throw new Error("usePokemonBase must be used within a PokemonBaseProvider");
+  }
+  return context;
 }
