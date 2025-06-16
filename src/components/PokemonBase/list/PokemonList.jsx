@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import TypeFilter from "../../common/TypeFilter";
 import { usePokemonBase } from "../../../contexts/PokemonBaseContext"; // Add import
 
-export default function PokemonList({ onBackToMenu }) {
+export default function PokemonList() {
   // Get all necessary data directly from PokemonBaseContext
   const {
     filteredPokemons: characters,

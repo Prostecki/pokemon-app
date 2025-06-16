@@ -75,23 +75,25 @@ export function PokemonBaseProvider({ children }) {
   // Search handler with debounce
   const handleSearch = useCallback(
     (query) => {
+      // 1. update search query state
       setSearchQuery(query);
 
-      // Cancel previous timeout if exists
+      // 2. cancel previous timeout if exists
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
       }
 
-      // Set new timeout for search
+      // 3. set new timeout for search
       searchTimeoutRef.current = setTimeout(async () => {
+        // 4. if query is empty, reset search results
         if (!query.trim()) {
           setSearchResults([]);
           return;
         }
-
+        //5. Perform search and update results
         const results = await searchPokemon(query);
         setSearchResults(results);
-      }, 300);
+      }, 300); // 300ms delay for debounce
     },
     [searchPokemon]
   );
