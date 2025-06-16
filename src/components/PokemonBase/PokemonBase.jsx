@@ -1,7 +1,6 @@
 import PokemonList from "./list/PokemonList";
 import PokemonDetails from "./details/PokemonDetails";
 import Header from "@/components/layout/Header";
-import { PaginationProvider } from "../../contexts/PaginationContext";
 import DetailLoader from "../common/DetailLoader";
 import { usePokemonBase } from "../../contexts/PokemonBaseContext";
 
@@ -14,14 +13,10 @@ export default function PokemonBase({ onBackToMenu }) {
     evolutions,
     resetDetails,
     handleSelectPokemon,
-    filteredPokemons,
-    loading,
     searchQuery,
     handleSearch,
     selectedTypes,
     handleTypeFilterChange,
-    currentPage,
-    loadMore,
   } = usePokemonBase();
 
   return (
@@ -38,28 +33,16 @@ export default function PokemonBase({ onBackToMenu }) {
           onSelectEvolution={handleSelectPokemon}
         />
       ) : (
-        <PaginationProvider
-          characters={filteredPokemons}
-          currentPage={currentPage}
-          loadMorePokemon={loadMore}
-          onSelect={handleSelectPokemon}
-        >
-          <>
-            <Header searchQuery={searchQuery} onSearch={handleSearch} />
-            <PokemonList
-              onBackToMenu={onBackToMenu}
-              searchQuery={searchQuery}
-              onSearch={handleSearch}
-              selectedTypes={selectedTypes}
-              onTypeFilterChange={handleTypeFilterChange}
-            />
-            {loading && (
-              <div className="flex justify-center my-4">
-                <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-              </div>
-            )}
-          </>
-        </PaginationProvider>
+        <>
+          <Header searchQuery={searchQuery} onSearch={handleSearch} />
+          <PokemonList
+            onBackToMenu={onBackToMenu}
+            searchQuery={searchQuery}
+            onSearch={handleSearch}
+            selectedTypes={selectedTypes}
+            onTypeFilterChange={handleTypeFilterChange}
+          />
+        </>
       )}
     </>
   );

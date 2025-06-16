@@ -1,41 +1,67 @@
-import { useNavigate } from "react-router-dom";
-import { usePaginationContext } from "../../../contexts/PaginationContext";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import PokemonCard from "./PokemonCard";
 import { ShinyButton } from "@/components/magicui/shiny-button";
 import { motion } from "framer-motion";
-import PokeInput from "../../common/PokeInput";
-import MenuButton from "../../common/MenuButton";
 import TypeFilter from "../../common/TypeFilter";
+import { usePokemonBase } from "../../../contexts/PokemonBaseContext"; // Add import
 
-export default function PokemonList({
-  searchQuery,
-  onSearch,
-  selectedTypes = [],
-  onTypeFilterChange,
-}) {
-  const { characters, loadMorePokemon, onSelect } = usePaginationContext();
+export default function PokemonList({ onBackToMenu }) {
+  // Get all necessary data directly from PokemonBaseContext
+  const {
+    filteredPokemons: characters,
+    loadMore: loadMorePokemon,
+    handleSelectPokemon: onSelect,
+    searchQuery,
+    selectedTypes,
+    handleTypeFilterChange,
+  } = usePokemonBase();
+
   const [isLoading, setIsLoading] = useState(false);
   const [prevCharactersCount, setPrevCharactersCount] = useState(0);
   const newPokemonRef = useRef(null);
-  const navigate = useNavigate();
+  const loadMoreRef = useRef(null);
 
-  // Handle click on a pokemon card
-  const handlePokemonClick = (id) => {
-    if (onSelect) {
-      onSelect(id);
-    }
-  };
+  // Function to load more pokemons
+  const loadMore = useCallback(() => {
+    if (isLoading || searchQuery) return;
 
-  // Handle "Load more" button click
-  const handleLoadMore = () => {
     setIsLoading(true);
     setPrevCharactersCount(characters.length);
+
     setTimeout(() => {
       loadMorePokemon().finally(() => {
         setIsLoading(false);
       });
     }, 100);
+  }, [isLoading, searchQuery, characters.length, loadMorePokemon]);
+
+  // Observer for infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isLoading && !searchQuery) {
+          loadMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (loadMoreRef.current) {
+        observer.unobserve(loadMoreRef.current);
+      }
+    };
+  }, [loadMore, isLoading, searchQuery]);
+
+  // Handler for clicking on a pokemon card
+  const handlePokemonClick = (id) => {
+    if (onSelect) {
+      onSelect(id);
+    }
   };
 
   return (
@@ -43,16 +69,13 @@ export default function PokemonList({
       {/* Fixed left sidebar */}
       <div
         className="fixed top-0 left-0 h-full overflow-y-auto bg-gray-50/80 backdrop-blur-sm z-20"
-        style={{
-          width: "28rem",
-          boxShadow: "4px 0 10px rgba(0,0,0,0.05)",
-        }}
+        style={{ width: "28rem", boxShadow: "4px 0 10px rgba(0,0,0,0.05)" }}
       >
         <div className="sticky top-4 p-4">
           <div className="mt-6">
             <TypeFilter
               activeTypes={selectedTypes}
-              onFilterChange={onTypeFilterChange}
+              onFilterChange={handleTypeFilterChange}
             />
           </div>
         </div>
@@ -96,17 +119,15 @@ export default function PokemonList({
                   </motion.div>
                 ))}
               </div>
-
               {/* "Load more" button for pagination */}
               {!searchQuery && characters.length > 0 && (
-                <div className="mt-8 flex justify-center">
-                  <button
-                    onClick={handleLoadMore}
-                    disabled={isLoading}
-                    className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-md transition duration-200 disabled:bg-blue-300"
-                  >
-                    {isLoading ? "Loading..." : "Load more..."}
-                  </button>
+                <div
+                  ref={loadMoreRef}
+                  className="h-20 w-full flex items-center justify-center my-4"
+                >
+                  {isLoading && (
+                    <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                  )}
                 </div>
               )}
             </div>
