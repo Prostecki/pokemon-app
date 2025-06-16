@@ -71,7 +71,7 @@ export default function PokemonList() {
         className="fixed top-0 left-0 h-full overflow-y-auto bg-gray-50/80 backdrop-blur-sm z-20"
         style={{ width: "28rem", boxShadow: "4px 0 10px rgba(0,0,0,0.05)" }}
       >
-        <div className="sticky top-4 p-4">
+        <div className="sticky top-25 p-4">
           <div className="mt-6">
             <TypeFilter
               activeTypes={selectedTypes}

@@ -75,7 +75,7 @@ export default function PokeInput({ searchQuery = "", onSearch = () => {} }) {
     <div className="my-2 md:w-[25rem] relative">
       {/* Shadow on focus */}
       <div
-        className={`absolute inset-0 border border-gray-300 rounded-sm pointer-events-none shadow-lg ${
+        className={`absolute inset-0 border border-gray-300 pointer-events-none shadow-lg ${
           isFocused ? "shadow-blue-100" : ""
         }`}
       />

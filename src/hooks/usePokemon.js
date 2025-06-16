@@ -7,7 +7,6 @@ export function usePokemon(itemsPerPage = 40) {
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
   // Details of the selected pokemon
   const [pokemonDetails, setPokemonDetails] = useState(null);
   const [evolutions, setEvolutions] = useState([]);

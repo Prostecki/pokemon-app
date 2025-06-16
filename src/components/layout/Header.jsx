@@ -2,6 +2,7 @@ import MenuButton from "../common/MenuButton";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PokeInput from "../common/PokeInput";
+import { ShinyButton } from "../magicui/shiny-button";
 
 export default function Header({ searchQuery, onSearch }) {
   const [isTransparent, setIsTransparent] = useState(false);
@@ -26,7 +27,13 @@ export default function Header({ searchQuery, onSearch }) {
         Choose your Pokemon!
       </h1>
       <PokeInput searchQuery={searchQuery} onSearch={onSearch} />
-      <MenuButton onClick={() => navigate("/")}>Back to Menu</MenuButton>
+      {/* <MenuButton onClick={() => navigate("/")}>Back to Menu</MenuButton> */}
+      <ShinyButton
+        onClick={() => navigate("/")}
+        className="border-black/20 bg-white"
+      >
+        Back to menu
+      </ShinyButton>
     </header>
   );
 }
