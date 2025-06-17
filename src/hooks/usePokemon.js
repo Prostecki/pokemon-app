@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { fetchPokemonList, fetchPokemonByUrl } from "../utils/pokemonApi";
 
 export function usePokemon(itemsPerPage = 40) {
@@ -203,4 +203,38 @@ export function usePokemon(itemsPerPage = 40) {
     evolutions,
     showDetails,
   };
+}
+
+export function usePokemonMove(move) {
+  const [moveDetails, setMoveDetails] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!move) return;
+
+    const fetchMoveDetails = async () => {
+      setLoading(true);
+      try {
+        // Extract move ID from URL if it's an object with URL
+        const moveId =
+          typeof move === "object" && move.url
+            ? move.url.split("/").filter(Boolean).pop()
+            : move.toLowerCase().replace(/\s+/g, "-");
+
+        const response = await fetch(
+          `https://pokeapi.co/api/v2/move/${moveId}`
+        );
+        const data = await response.json();
+        setMoveDetails(data);
+      } catch (error) {
+        console.error("Error fetching move details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMoveDetails();
+  }, [move]);
+
+  return { moveDetails, loading };
 }
