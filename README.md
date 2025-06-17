@@ -3,8 +3,6 @@
 A comprehensive React application for exploring Pokémon data with interactive features.  
 Browse Pokémon, view detailed stats, check evolution chains, and more.
 
-![Pokémon App](https://pokeapi.co/static/pokeapi_256.png)
-
 ## Features
 
 - **Interactive Pokédex** – Browse and search through Pokémon.
