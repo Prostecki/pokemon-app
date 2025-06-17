@@ -2,6 +2,17 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getTypeColor } from "../../../utils/getTypeColor";
 
+// Добавьте объект с градиентами для разных типов
+const typeGradients = {
+  fire: "linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%)",
+  water: "linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)",
+  grass: "linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)",
+  electric: "linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%)",
+  bug: "linear-gradient(135deg, #f6d365 0%, #96e6a1 100%)",
+  normal: "linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%)",
+  // ...добавьте остальные типы по необходимости
+};
+
 export default function ChosenPokemon({ pokemon }) {
   const [currentImage, setCurrentImage] = useState(pokemon.image);
   const [previousPokemon, setPreviousPokemon] = useState(null);
@@ -26,6 +37,11 @@ export default function ChosenPokemon({ pokemon }) {
     setCurrentImage(newImage);
   };
 
+  // Получаем основной тип покемона
+  const mainType = pokemon.types[0];
+  const gradientBg =
+    typeGradients[mainType] || "linear-gradient(135deg, #fff 0%, #eee 100%)";
+
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <div className="flex flex-col items-center gap-3">
@@ -48,10 +64,16 @@ export default function ChosenPokemon({ pokemon }) {
       </div>
 
       {/* Animated container for the pokemon image */}
-      <div className="relative w-full h-64 overflow-hidden">
+      <div
+        className="relative w-full h-64 overflow-hidden rounded-2xl"
+        style={{
+          background: gradientBg,
+          transition: "background 0.5s",
+        }}
+      >
         <AnimatePresence initial={false} custom={direction}>
           <motion.div
-            key={animationKey} // Using animationKey instead of currentImage
+            key={animationKey}
             custom={direction}
             initial={{
               opacity: 0,
@@ -73,7 +95,7 @@ export default function ChosenPokemon({ pokemon }) {
             className="absolute inset-0 flex items-center justify-center"
           >
             <img
-              src={currentImage} // Current image (normal or shiny)
+              src={currentImage}
               alt={pokemon.name}
               className="w-auto h-full max-h-64 object-contain"
             />

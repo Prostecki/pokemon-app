@@ -139,7 +139,7 @@ export function PokemonBaseProvider({ children }) {
     return filtered;
   }, [searchQuery, searchResults, allPokemons, selectedTypes]);
 
-  const value = {
+  const contextValue = {
     ITEMS_PER_PAGE,
     searchQuery,
     setSearchQuery,
@@ -162,11 +162,12 @@ export function PokemonBaseProvider({ children }) {
     handleSelectPokemon,
     handleTypeFilterChange,
     filteredPokemons,
+    fetchDetails,
     resetDetails,
   };
 
   return (
-    <PokemonBaseContext.Provider value={value}>
+    <PokemonBaseContext.Provider value={contextValue}>
       {children}
     </PokemonBaseContext.Provider>
   );

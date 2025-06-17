@@ -2,8 +2,11 @@ import { motion } from "framer-motion";
 import { getTypeColor } from "../../../utils/getTypeColor";
 import { getGradientFromColor } from "../../../utils/adjustColor";
 import { Card3D } from "../../common/Card3D";
+import { useNavigate } from "react-router-dom";
 
 export default function PokemonCard({ character, onClick }) {
+  const navigate = useNavigate();
+
   // Determine the main pokemon type and create a gradient background
   const getTypeBackground = () => {
     // Simplified check for the existence of a type
@@ -103,9 +106,13 @@ export default function PokemonCard({ character, onClick }) {
     </>
   );
 
+  const handleClick = () => {
+    navigate(`/base/${character.id}`);
+  };
+
   return (
     <Card3D
-      onClick={() => onClick(character.id)}
+      onClick={handleClick}
       topSectionBackground={getTypeBackground()}
       topSectionContent={topSectionContent}
       bottomSectionContent={bottomSectionContent}

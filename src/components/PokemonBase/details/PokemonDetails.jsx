@@ -1,4 +1,3 @@
-import { useState } from "react";
 import PokemonStatsChart from "./PokemonStatsChart";
 import ChosenPokemon from "./ChosenPokemon";
 import PokemonDetailInfo from "./PokemonDetailInfo";
@@ -12,17 +11,7 @@ export default function PokemonDetails({
   onBack,
   onSelectEvolution,
 }) {
-  const [isReturning, setIsReturning] = useState(false);
-
-  const handleBack = () => {
-    setIsReturning(true);
-    setTimeout(() => {
-      onBack();
-      setIsReturning(false);
-    }, 300);
-  };
-
-  if (loading || isReturning) {
+  if (loading) {
     return <PokemonDetailsLoading />;
   }
 
@@ -39,7 +28,7 @@ export default function PokemonDetails({
         Back to all Pokémon
       </button>
 
-      {/* Main content - flex col on mobile, row on larger screens */}
+      {/* Main content - остальной код без изменений */}
       <div className="flex flex-col md:flex-row w-full md:gap-6">
         {/* Left: Main info and image - full width on mobile, half on larger */}
         <div className="w-full md:w-1/2 md:pr-4">
@@ -52,7 +41,7 @@ export default function PokemonDetails({
               <Evolutions
                 evolutions={evolutions}
                 onSelect={onSelectEvolution}
-                currentPokemonId={pokemon.id} // Передаем ID текущего покемона
+                currentPokemonId={pokemon.id}
               />
             </div>
           )}

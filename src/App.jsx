@@ -13,8 +13,8 @@ const StartMenu = lazy(() => import("./components/StartMenu/StartMenu"));
 const StartGame = lazy(() => import("./components/StartGame/StartGame"));
 const About = lazy(() => import("./components/About/About"));
 const PokemonBase = lazy(() => import("./components/PokemonBase/PokemonBase"));
-const PokemonDetails = lazy(() =>
-  import("./components/PokemonBase/details/PokemonDetails")
+const PokemonDetailsRoute = lazy(() =>
+  import("./components/PokemonBase/details/PokemonDetailsRoute")
 );
 
 const NotFoundPage = lazy(() => import("./components/common/NotFoundPage"));
@@ -103,7 +103,7 @@ export default function RouterApp() {
                     <Route path="/base" element={<PokemonBase />} />
                     <Route path="/startgame" element={<StartGame />} />
                     <Route path="/profile" element={<NotFoundPage />} />
-                    <Route path="/base/:id" element={<PokemonDetails />} />
+                    <Route path="/base/:id" element={<PokemonDetailsRoute />} />
                   </Routes>
                 </Suspense>
               </Router>
