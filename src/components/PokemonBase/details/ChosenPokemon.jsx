@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getTypeColor } from "../../../utils/getTypeColor";
 
-// Добавьте объект с градиентами для разных типов
+// Add an object with gradients for different types
 const typeGradients = {
   fire: "linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%)",
   water: "linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)",
@@ -10,7 +10,7 @@ const typeGradients = {
   electric: "linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%)",
   bug: "linear-gradient(135deg, #f6d365 0%, #96e6a1 100%)",
   normal: "linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%)",
-  // ...добавьте остальные типы по необходимости
+  // ...add the remaining types as needed
 };
 
 export default function ChosenPokemon({ pokemon }) {
@@ -37,7 +37,7 @@ export default function ChosenPokemon({ pokemon }) {
     setCurrentImage(newImage);
   };
 
-  // Получаем основной тип покемона
+  // Get the main type of the pokemon
   const mainType = pokemon.types[0];
   const gradientBg =
     typeGradients[mainType] || "linear-gradient(135deg, #fff 0%, #eee 100%)";
