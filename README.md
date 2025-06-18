@@ -75,3 +75,5 @@ Browse Pokémon, view detailed stats, check evolution chains, and more.
 - Implement user accounts to save favorite Pokémon
 - Add keyboard navigation for better accessibility
 - Implement virtualized lists for improved performance with large data sets
+- There is a known issue when navigating back from a Pokémon details page (/pokemon/:id) to the main list view.
+- The scroll position and UI state are not preserved, which may affect user experience during navigation.
