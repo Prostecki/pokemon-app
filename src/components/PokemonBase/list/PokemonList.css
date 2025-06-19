@@ -1,0 +1,125 @@
+/* Main container */
+.pokemon-list-container {
+  min-height: 100vh;
+  padding-top: 3.5rem;
+  overflow-x: hidden;
+  display: flex;
+}
+
+/* Sidebar */
+.pokemon-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 28rem;
+  overflow-y: auto;
+  background-color: rgba(249, 250, 251, 0.8);
+  backdrop-filter: blur(4px);
+  z-index: 20;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-content {
+  position: sticky;
+  top: 25px;
+  padding: 1rem;
+}
+
+.filter-container {
+  margin-top: 1.5rem;
+}
+
+/* Main content area */
+.main-content {
+  margin-left: 30rem;
+  flex: 1 1 0%;
+  padding: 1.5rem;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.content-header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 2.5rem;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.empty-state-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: rgb(75, 85, 99);
+}
+
+.empty-state-subtitle {
+  margin-top: 0.5rem;
+  color: rgb(107, 114, 128);
+}
+
+/* Pokemon grid */
+.pokemon-grid {
+  display: grid;
+  gap: 1rem;
+  width: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  justify-items: center;
+}
+
+.pokemon-card-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Load more section */
+.load-more-container {
+  height: 5rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.loading-spinner {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 4px solid rgb(59, 130, 246);
+  border-top-color: transparent;
+  border-radius: 9999px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Scroll to top button */
+.scroll-top-button {
+  position: fixed;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: rgba(226, 232, 240, 0.4);
+  z-index: 20;
+}
