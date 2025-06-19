@@ -1,0 +1,41 @@
+.about-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.about-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .about-content {
+    max-width: 50rem;
+  }
+}
+
+.about-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.about-paragraph {
+  color: rgb(55, 65, 81);
+}
+
+.about-paragraph-center {
+  color: rgb(55, 65, 81);
+  text-align: center;
+}
+
+.about-link {
+  color: rgb(59, 130, 246);
+}
