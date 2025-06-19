@@ -1,6 +1,7 @@
 import { useState } from "react";
 import MovesList from "./MovesList";
 import MoveDetails from "./MoveDetails";
+import "./styles/PokemonMoves.css";
 
 export default function PokemonMoves({ moves }) {
   const [selectedMove, setSelectedMove] = useState(null);
@@ -10,8 +11,8 @@ export default function PokemonMoves({ moves }) {
   };
 
   return (
-    <div className="space-y-4">
-      <h3 className="font-semibold text-lg">Moves ({moves.length})</h3>
+    <div className="moves-container">
+      <h3 className="moves-title">Moves ({moves.length})</h3>
 
       {/* List of moves component */}
       <MovesList

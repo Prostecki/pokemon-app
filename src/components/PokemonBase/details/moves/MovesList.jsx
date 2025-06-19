@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { getTypeColor, getMoveName } from "../../../../utils/getTypeColor";
+import "./styles/MovesList.css";
 
 export default function MovesList({ moves, selectedMove, onSelectMove }) {
   // Animation variants
@@ -18,7 +19,7 @@ export default function MovesList({ moves, selectedMove, onSelectMove }) {
 
   return (
     <motion.div
-      className="flex flex-wrap gap-2"
+      className="moves-list"
       variants={container}
       initial="hidden"
       animate="show"
@@ -34,9 +35,7 @@ export default function MovesList({ moves, selectedMove, onSelectMove }) {
               boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
             }}
             whileTap={{ scale: 0.95 }}
-            className={`px-3 py-1 rounded-full text-white cursor-pointer ${
-              selectedMove === move ? "ring-2 ring-white" : ""
-            }`}
+            className={`move-item ${selectedMove === move ? "selected" : ""}`}
             style={{
               backgroundColor: getTypeColor(move.type?.name || "normal"),
             }}

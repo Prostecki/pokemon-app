@@ -1,0 +1,175 @@
+.move-details {
+  background-image: linear-gradient(
+    to bottom right,
+    rgb(249, 250, 251),
+    rgb(243, 244, 246)
+  );
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  margin-top: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgb(229, 231, 235);
+}
+
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 0;
+}
+
+.loading-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid rgb(59, 130, 246);
+  border-top-color: transparent;
+  border-radius: 9999px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.move-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 640px) {
+  .move-header {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.move-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(
+    to right,
+    rgb(37, 99, 235),
+    rgb(124, 58, 237)
+  );
+}
+
+.move-type {
+  padding: 0.25rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: white;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  display: inline-block;
+}
+
+.move-class {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgb(55, 65, 81);
+  background-color: rgb(229, 231, 235);
+  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.stat-card {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+}
+
+.stat-card:hover {
+  transform: scale(1.03);
+}
+
+.power-card {
+  border-left: 4px solid rgb(250, 204, 21);
+}
+
+.accuracy-card {
+  border-left: 4px solid rgb(96, 165, 250);
+}
+
+.pp-card {
+  border-left: 4px solid rgb(192, 132, 252);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgb(107, 114, 128);
+  font-weight: 500;
+}
+
+.power-value {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: rgb(202, 138, 4);
+}
+
+.accuracy-value {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: rgb(37, 99, 235);
+}
+
+.pp-value {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: rgb(147, 51, 234);
+}
+
+.effect-container {
+  margin-top: 1rem;
+  background-color: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.effect-title {
+  font-weight: 700;
+  color: rgb(55, 65, 81);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  letter-spacing: 0.025em;
+}
+
+.effect-text {
+  color: rgb(75, 85, 99);
+  line-height: 1.625;
+}
+
+.flavor-text {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: rgb(249, 250, 251);
+  border: 1px solid rgb(229, 231, 235);
+  font-style: italic;
+  color: rgb(75, 85, 99);
+}
