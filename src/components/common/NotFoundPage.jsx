@@ -1,9 +1,7 @@
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import "./styles/NotFoundPage.css";
+import "./styles/notfoundpage.css";
 
 export default function NotFound() {
-  const navigate = useNavigate();
   return (
     <div className="not-found-container pokemon-list-bg">
       <div className="not-found-content space-y-8">
