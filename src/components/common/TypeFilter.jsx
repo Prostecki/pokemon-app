@@ -27,7 +27,7 @@ export default function TypeFilter({ onFilterChange, activeTypes = [] }) {
   };
 
   return (
-    <div className="filter__container my-6 w-full max-w-sm">
+    <div className="filter__container mt-20 w-full max-w-sm">
       <div className="shadow__input"></div>
       <div className="p-3">
         <div className="flex justify-between items-center mb-3">

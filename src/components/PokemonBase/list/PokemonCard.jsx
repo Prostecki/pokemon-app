@@ -4,6 +4,35 @@ import { getGradientFromColor } from "../../../utils/adjustColor";
 import { Card3D } from "../../common/Card3D";
 import { useNavigate } from "react-router-dom";
 
+// Extracted styles object
+const styles = {
+  topSectionWrapper: {
+    transformStyle: "preserve-3d",
+    display: "flex",
+    margin: "2rem auto",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+    zIndex: 5,
+    height: "100%",
+  },
+  typeBadge: (mainType) => ({
+    backgroundColor: getTypeColor(mainType),
+    transform: "translateZ(10px)",
+    zIndex: 10,
+  }),
+  pokemonImage: {
+    width: "150px",
+    height: "150px",
+    filter: "drop-shadow(rgba(0, 0, 0, 0.5) 3px 3px 5px)",
+    objectFit: "contain",
+    transform: "translateZ(5px)",
+  },
+  title: {
+    transform: "translateZ(15px)",
+  },
+};
+
 export default function PokemonCard({ character, onClick }) {
   const navigate = useNavigate();
 
@@ -40,26 +69,11 @@ export default function PokemonCard({ character, onClick }) {
 
   // Content for the top section of the card
   const topSectionContent = character.image && (
-    <motion.div
-      style={{
-        transformStyle: "preserve-3d",
-        display: "flex",
-        margin: "2rem auto",
-        justifyContent: "center",
-        alignItems: "center",
-        position: "relative",
-        zIndex: 5,
-        height: "100%",
-      }}
-    >
+    <motion.div style={styles.topSectionWrapper}>
       {/* Type badge in top-left corner */}
       <div
         className="absolute top-[-1.8rem] left-[-0.6rem] px-2 py-1 rounded-tl-xl rounded-br-xl text-white text-xs font-bold uppercase shadow-md"
-        style={{
-          backgroundColor: getTypeColor(mainType),
-          transform: "translateZ(10px)",
-          zIndex: 10,
-        }}
+        style={styles.typeBadge(mainType)}
       >
         <span>{mainType}</span>
       </div>
@@ -68,13 +82,7 @@ export default function PokemonCard({ character, onClick }) {
         src={character.image}
         alt={character.name}
         loading="lazy"
-        style={{
-          width: "150px",
-          height: "150px",
-          filter: "drop-shadow(rgba(0, 0, 0, 0.5) 3px 3px 5px)",
-          objectFit: "contain",
-          transform: "translateZ(5px)",
-        }}
+        style={styles.pokemonImage}
       />
     </motion.div>
   );
@@ -82,10 +90,7 @@ export default function PokemonCard({ character, onClick }) {
   // Content for the bottom section of the card
   const bottomSectionContent = (
     <>
-      <motion.span
-        className="title mt-5"
-        style={{ transform: "translateZ(15px)" }}
-      >
+      <motion.span className="title mt-5" style={styles.title}>
         {character.name?.toUpperCase() || "POKEMON"}
       </motion.span>
 
