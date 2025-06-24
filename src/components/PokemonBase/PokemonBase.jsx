@@ -3,8 +3,11 @@ import PokemonDetails from "./details/PokemonDetails";
 import Header from "@/components/layout/Header";
 import DetailLoader from "../common/DetailLoader";
 import { usePokemonBase } from "../../contexts/PokemonBaseContext";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function PokemonBase({ onBackToMenu }) {
+  const location = useLocation();
   // Get all necessary data and functions from the context
   const {
     isLoadingDetails,
@@ -18,6 +21,13 @@ export default function PokemonBase({ onBackToMenu }) {
     selectedTypes,
     handleTypeFilterChange,
   } = usePokemonBase();
+
+  // Reset details when location is exactly /base
+  useEffect(() => {
+    if (location.pathname === "/base" && showDetails) {
+      resetDetails();
+    }
+  }, [location, resetDetails, showDetails]);
 
   return (
     <>

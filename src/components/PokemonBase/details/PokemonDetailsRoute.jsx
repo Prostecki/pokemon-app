@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { usePokemonBase } from "../../../contexts/PokemonBaseContext";
 import PokemonDetails from "./PokemonDetails";
@@ -15,24 +15,33 @@ export default function PokemonDetailsRoute() {
     resetDetails,
   } = usePokemonBase();
 
+  // Add local loading state to handle route changes
+  const [isChangingPokemon, setIsChangingPokemon] = useState(true);
+
   useEffect(() => {
+    // Set loading state immediately when ID changes
+    setIsChangingPokemon(true);
+
     if (id) {
-      fetchDetails(id);
+      fetchDetails(id).finally(() => {
+        setIsChangingPokemon(false);
+      });
     }
   }, [id, fetchDetails]);
 
-  // Fix the back button to navigate directly to the base route
   const handleBack = () => {
-    // Navigate back first, then reset details state
     navigate("/base");
-    resetDetails(); // Optional: can be removed if resetDetails is called by route change
+    resetDetails();
   };
 
   const handleSelectEvolution = (evolutionId) => {
+    // Set loading state before navigation
+    setIsChangingPokemon(true);
     navigate(`/base/${evolutionId}`);
   };
 
-  if (isLoadingDetails) {
+  // Show loading if either global or local loading state is true
+  if (isLoadingDetails || isChangingPokemon) {
     return <PokemonDetailsLoading />;
   }
 
